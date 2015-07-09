@@ -15,7 +15,7 @@ class Node(object):
 
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = random.random()
+            self.value = str(random.random())
         else:
             self.value = value
 
@@ -26,7 +26,8 @@ class Node(object):
 class BinaryTree(list):
 
     def __init__(self, choice, depth, primitives, set_dict):
-        #pass dict instead, storing p, f, t
+        # include a way to initialize a tree to some particular set of values
+        # maybe variable number of arguments?
         self.primitives = primitives
         self.set_dict = set_dict
         self.depth = depth
@@ -129,30 +130,32 @@ class BinaryTree(list):
 ##                content.append(None)
 ##        # return a string? Have to fix this before debugging other things
 ##        return content
+        
 
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         index = random.randint(0, self.size - 1)
-        rand_node = self[index]
-        if rand_node.value not in self.set_dict["functions"]:
-            return index
-        else:
+        if (self[index] is None) or (self[index].value in
+                                     self.set_dict["functions"]):
             return self.get_rand_terminal()
+                
+        return index
 
 
     def get_rand_function(self):
-        """Returns the index of a random function, or None if no such node
-        exists in tree
+        """Returns the index of a random function, or raises an error if tree
+        does not contain one
         """
-        if self[0].value not in self.set_dict["functions"]:
+        if (self[0] is None) or (self[0].value not in self.set_dict["functions"]):
             raise NodeSelectionError
         
         index = random.randint(0, self.last_level - 1)
-        rand_node = self[index]
-        if rand_node.value in self.set_dict["functions"]:
-            return index
-        
-        return self.get_rand_function()
+        if (self[index] is None) or (self[index].value not in
+                                     self.set_dict["functions"]):
+            return self.get_rand_function()
+
+        return index
+    
 
     def get_subtree(self, n, depth=0):
         """Retrieves and returns as a list the subtree starting at index n"""
@@ -229,12 +232,6 @@ function crossover cannot be performed'
         return self.msg
 
 
-def get_depth(k):
-    """"""
-    d = math.log2(k + 1) - 1
-    return d
-
-
 """Data handling functions for user use"""
 
 
@@ -258,6 +255,32 @@ def primitive_handler(prim_dict, variables):
     return {"primitives":primitives, "functions":functions, "terminals":terminals}
 
 
+def read_data(filename):
+    """Reads data from a file and returns a list of tuples. Each tuple
+    contains variable values at a specific step
+    """
+    data = []
+    file = open(filename, "r")
+    for line in file:
+        line_string = line.rstrip('\n')
+        line_list = line_string.split(',')
+        for i in range(len(line_list)):
+            line_list[i] = float(line_list[i])
+        line_tuple = tuple(line_list)
+        data.append(line_tuple)
+    file.close()
+    return data
+
+
+"""Functions for working with individual trees"""
+
+
+def get_depth(k):
+    """Takes the size k of a binary tree and returns its depth"""
+    d = math.log2(k + 1) - 1
+    return d
+
+
 def next_level_size(k):
     """Takes a tree size (number of nodes) k and returns the number of nodes
     that would be in the next deeper level
@@ -268,7 +291,10 @@ def next_level_size(k):
     return next_level_size
 
 
-def fitness(tree, variables, dataset):
+"""Functions used in fitness evaluation, recombination, and mutation"""
+
+
+def _fitness(tree, variables, dataset):
     """variables is a tuple of strings denoting variable names, and dataset is
     a list of tuples of floats denoting variable values
     """
@@ -290,22 +316,23 @@ def fitness(tree, variables, dataset):
     return tot_err
 
 
-def sample(population, n):
+def _sample(population, n):
     """A wrapper for the random module's sample function"""
     pop_sample = random.sample(population, n)
     return pop_sample
 
 
-def tournament(pop_sample, variables, data):
+def _tournament(population, n, variables, data):
     """Performs tournament selection, randomly choosing n individuals from the
     population and thunderdome-ing it, returning the individual with the best
     fitness
     """
+    pop_sample = _sample(population, n)
     best = None
     best_score = None
     for item in pop_sample:
         try:
-            score = fitness(item, variables, data)
+            score = _fitness(item, variables, data)
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
@@ -315,25 +342,11 @@ def tournament(pop_sample, variables, data):
     return best
 
 
-def read_data(filename):
-    """Reads data from a file and returns a list of tuples. Each tuple
-    contains variable values at a specific step
-    """
-    data = []
-    file = open(filename, "r")
-    for line in file:
-        line_string = line.rstrip('\n')
-        line_list = line_string.split(',')
-        for i in range(len(line_list)):
-            line_list[i] = float(line_list[i])
-        line_tuple = tuple(line_list)
-        data.append(line_tuple)
-    file.close()
-    return data
-
-
 def _crossover(tree1, tree2, cross_pt1, cross_pt2):
-    """"""
+    """Takes two tree objects and a crossover index on each and returns a copy
+    of the first tree with the subtree rooted at the first crossover point
+    replaced by the subtree rooted at the second point on the second tree
+    """
     tree1copy = copy.deepcopy(tree1)
     tree2copy = copy.deepcopy(tree2)
     sub = tree2copy.get_subtree(cross_pt2)
@@ -341,39 +354,39 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
     return tree1copy
 
 
-"""Tree reproduction and mutation functions for user use"""
+"""Tree recombination and mutation functions for user use"""
 
 
 def subtree_crossover(population, n, variables, data):
-    """"""
-    pop_sample = sample(population, n)
-    first_parent = tournament(pop_sample, variables, data)
-    second_parent = tournament(pop_sample, variables, data)
+    """Takes a population, performs 2 tournament selections with sample size n,
+    performs subtree crossover on the winners, and returns a new tree
+    """
+    exception_occurred = False
+    first_parent = _tournament(population, n, variables, data)
+    second_parent = _tournament(population, n, variables, data)
     choice = random.random()
     if choice < 0.9:
         try:
             cross_pt1 = first_parent.get_rand_function()
             cross_pt2 = second_parent.get_rand_function()
         except NodeSelectionError:
-            return None
+            exception_occurred = True
     else:
         cross_pt1 = first_parent.get_rand_terminal()
         cross_pt2 = second_parent.get_rand_terminal()
 
-    new_tree = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
-
-    if new_tree is not None:
-        return new_tree
-    # test this!
+    if exception_occurred == False:
+        return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
+    
     return subtree_crossover(population, n, variables, data)
 
 
-def subtree_mutation():
+def subtree_mutation(max_depth, primitives, set_dict):
     """"""
     init_options = ['full', 'grow']
     subtree = BinaryTree(random.choice(init_options),
-                         random.randint(0,max_depth), primitives, set_dict)
-    # test this!
+                         random.randint(0, max_depth), primitives, set_dict)
+    # test this! may need to add max _depth to global parameters
     return _crossover(tree, subtree, random.randint(0, len(tree)-1), 0)
 
 
@@ -384,7 +397,7 @@ def point_mutation():
 def reproduction(population, n, variables, data):
     """"""
     pop_sample = sample(population, n)
-    winner = tournament(pop_sample, variables, data)
+    winner = _tournament(pop_sample, variables, data)
     return winner
 
 # Another method that extracts headers and passes a tuple
