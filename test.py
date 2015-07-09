@@ -16,6 +16,9 @@ f = 'full'
 g = 'grow'
 
 
+tree1 = pygp.BinaryTree(f, 2, primitives, set_dict)
+
+
 pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(5)]
 
 

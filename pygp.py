@@ -104,17 +104,7 @@ class BinaryTree(list):
             else:
                 self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
 
-##    def contents(self):
-##        content = []
-##        for node in self:
-##            try:
-##                content.append(node.value)
-##            except AttributeError:
-##                content.append(None)
-##        # return a string? Have to fix this before debugging other things
-##        return content
-
-    def _assemble(self, n):
+    def _assemble(self, n=0):
         left_index = self.get_left_index(n)
         right_index = self.get_right_index(n)
         if (2 * n + 2) < self.size:
@@ -130,6 +120,16 @@ class BinaryTree(list):
         else:
             return self[n].value
 
+    ##    def contents(self):
+##        content = []
+##        for node in self:
+##            try:
+##                content.append(node.value)
+##            except AttributeError:
+##                content.append(None)
+##        # return a string? Have to fix this before debugging other things
+##        return content
+
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         index = random.randint(0, self.size - 1)
@@ -138,6 +138,7 @@ class BinaryTree(list):
             return index
         else:
             return self.get_rand_terminal()
+
 
     def get_rand_function(self):
         """Returns the index of a random function, or None if no such node
@@ -149,7 +150,7 @@ class BinaryTree(list):
         index = random.randint(0, self.last_level - 1)
         rand_node = self[index]
         if rand_node.value in self.set_dict["functions"]:
-            return index 
+            return index
         
         return self.get_rand_function()
 
@@ -170,11 +171,7 @@ class BinaryTree(list):
         """
         if n >= self.size:
             return
-            """ problem is here! self.size is not readjusted, so
-                          writing ceases
-                          could still be another problem lurking... doesn't
-                          explain the transposing of elements
-                          """
+
         start = n
         stop = (2 ** depth) + n
         for i in range(start,stop):
@@ -182,9 +179,9 @@ class BinaryTree(list):
         self._fill_subtree(start*2+1, subtree, depth+1)
 
     def _pad(self, n, subtree):
-        """Takes in a starting node index n and a subtree, and pads the tree
-        if the subtree would extend beyond the deepest level, or the subtree
-        if it does not extend down to the tree's deepest level
+        """Takes in a starting node index n and a subtree as a list, and pads
+        the tree if the subtree would extend beyond the deepest level, or the
+        subtree if it does not extend down to the tree's deepest level
         """
         old = self.get_subtree(n)
         new = subtree
@@ -233,6 +230,7 @@ function crossover cannot be performed'
 
 
 def get_depth(k):
+    """"""
     d = math.log2(k + 1) - 1
     return d
 
@@ -275,9 +273,8 @@ def fitness(tree, variables, dataset):
     a list of tuples of floats denoting variable values
     """
     m = len(variables)
-    var_list = []
+    var_list = [] # could just convert tuple to a list
     var_list.extend(variables)
-    
     tot_err = 0
     for item in dataset:
         for i in range(m):
@@ -289,6 +286,7 @@ def fitness(tree, variables, dataset):
             tot_err = tot_err + err
         except ZeroDivisionError:
             raise SingularityError
+    
     return tot_err
 
 
@@ -308,14 +306,12 @@ def tournament(pop_sample, variables, data):
     for item in pop_sample:
         try:
             score = fitness(item, variables, data)
-
-            print(item._assemble(0), score)
-            
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
         except SingularityError:
             pass
+    
     return best
 
 
@@ -345,15 +341,11 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
     return tree1copy
 
 
-<<<<<<< HEAD
-def subtree_crossover(population, n, variables, data):
-    exception_occurred = False
-=======
 """Tree reproduction and mutation functions for user use"""
 
 
-def subtree_crossover(population, n, variables, functions, terminals, data):
->>>>>>> origin/master
+def subtree_crossover(population, n, variables, data):
+    """"""
     pop_sample = sample(population, n)
     first_parent = tournament(pop_sample, variables, data)
     second_parent = tournament(pop_sample, variables, data)
@@ -363,23 +355,25 @@ def subtree_crossover(population, n, variables, functions, terminals, data):
             cross_pt1 = first_parent.get_rand_function()
             cross_pt2 = second_parent.get_rand_function()
         except NodeSelectionError:
-            exception_occurred = True
+            return None
     else:
         cross_pt1 = first_parent.get_rand_terminal()
         cross_pt2 = second_parent.get_rand_terminal()
 
-    if exception_occurred == False:
-        new = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
-        return new
-    
-    return subtree_crossover(population, n, variables, data)
-#test - print statements
+    new_tree = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
 
-def subtree_mutation(tree, primitives, set_dict, max_depth):
+    if new_tree is not None:
+        return new_tree
+    # test this!
+    return subtree_crossover(population, n, variables, data)
+
+
+def subtree_mutation():
     """"""
     init_options = ['full', 'grow']
     subtree = BinaryTree(random.choice(init_options),
                          random.randint(0,max_depth), primitives, set_dict)
+    # test this!
     return _crossover(tree, subtree, random.randint(0, len(tree)-1), 0)
 
 
@@ -392,11 +386,5 @@ def reproduction(population, n, variables, data):
     pop_sample = sample(population, n)
     winner = tournament(pop_sample, variables, data)
     return winner
-#test - print statements
-
-<<<<<<< HEAD
 
 # Another method that extracts headers and passes a tuple
-=======
-# Another method that extracts headers and passes a tuple
->>>>>>> origin/master
