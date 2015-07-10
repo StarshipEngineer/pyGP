@@ -12,7 +12,7 @@ primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0}
 
 
 class Node(object):
-
+    """"""
     def __init__(self, value, arity):
         if value == "rand":
             self.value = str(random.random())
@@ -24,7 +24,7 @@ class Node(object):
 
 
 class BinaryTree(list):
-
+    """"""
     def __init__(self, choice, depth, primitives, set_dict, contents=[]):
         # include a way to initialize a tree to some particular set of values
         # maybe variable number of arguments? how to control the logic?
@@ -34,6 +34,11 @@ class BinaryTree(list):
         self.size = 2 ** (self.depth + 1) - 1
         self.last_level = 2 ** self.depth - 1
         self.extend([None]*self.size)
+
+        # if contents not empty
+        # instead, could do choice defaults to contents list, flattens logic
+        # if contents is a list, fill using that; else if it's a string, do what it already does
+
         self.type = choice
         if self.type == 'full':
             self._full(self.size, self.last_level, 0)
