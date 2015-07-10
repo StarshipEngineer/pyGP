@@ -10,17 +10,19 @@ import math
 primitives = pygp.primitives
 variables = ("x")
 set_dict = pygp.primitive_handler(primitives, variables)
-# introduce a structure that contains all of the necessary arguments for tree generation?
-data = pygp.read_data('datafile.csv')
-f = 'full'
-g = 'grow'
+### introduce a structure that contains all of the necessary arguments for tree generation?
+##data = pygp.read_data('datafile.csv')
+##f = 'full'
+##g = 'grow'
+##
+##
+##tree1 = pygp.BinaryTree(f, 2, primitives, set_dict)
+##tree2 = pygp.BinaryTree(f, 2, primitives, set_dict)
+##
+##
+##pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(100)]
 
 
-tree1 = pygp.BinaryTree(f, 2, primitives, set_dict)
-tree2 = pygp.BinaryTree(f, 2, primitives, set_dict)
-
-
-pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(100)]
 
 
 ##for item in tree1:

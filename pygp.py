@@ -25,26 +25,28 @@ class Node(object):
 
 class BinaryTree(list):
     """"""
-    def __init__(self, choice, depth, primitives, set_dict, contents=[]):
-        # include a way to initialize a tree to some particular set of values
-        # maybe variable number of arguments? how to control the logic?
+    def __init__(self, primitives, set_dict, contents, depth=None):
         self.primitives = primitives
         self.set_dict = set_dict
-        self.depth = depth
-        self.size = 2 ** (self.depth + 1) - 1
-        self.last_level = 2 ** self.depth - 1
+        values_provided = (type(contents) == list)
+        if values_provided:
+            self.size = len(contents)
+            self.depth = get_depth(self.size)
+        else:
+            self.depth = depth
+            self.size = 2 ** (self.depth + 1) - 1
+
         self.extend([None]*self.size)
-
-        # if contents not empty
-        # instead, could do choice defaults to contents list, flattens logic
-        # if contents is a list, fill using that; else if it's a string, do what it already does
-
-        self.type = choice
-        if self.type == 'full':
+        self.last_level = 2 ** self.depth - 1
+        if values_provided:
+            for i in range(len(contents)):
+                self[i] = Node(contents[i], primitives[contents[i]])
+        elif contents == 'full':
             self._full(self.size, self.last_level, 0)
-        elif self.type == 'grow':
+        elif contents == 'grow':
             self._grow(self.size, self.last_level, 0)
-        self.prog = self._assemble(0)
+
+        self.prog = self._assemble()
 
     def get_left_index(self, n):
         return 2 * n + 1
@@ -56,8 +58,9 @@ class BinaryTree(list):
         return int( (n - 1) / 2)
 
     def has_children(self, n):
-        if (2 * n + 1) >= len(self) or (self[self.get_left_index(n)] == None and \
-                                        self[self.get_right_index(n)] == None):
+        if (2 * n + 1) >= len(self) or (self[self.get_left_index(n)] == None
+                                        and self[self.get_right_index(n)]
+                                        == None):
             return False
         else:
             return True
@@ -97,7 +100,8 @@ class BinaryTree(list):
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < m):
-            if parent is None or parent.value not in self.set_dict["functions"]:
+            if parent is None or parent.value not in
+            self.set_dict["functions"]:
                 self[n] = None
             else:
                 prim = random.choice(self.set_dict["primitives"])
@@ -105,7 +109,8 @@ class BinaryTree(list):
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < s):
-            if parent is None or parent.value not in self.set_dict["functions"]:
+            if parent is None or parent.value not in
+            self.set_dict["functions"]:
                 self[n] = None
             else:
                 self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
@@ -136,7 +141,6 @@ class BinaryTree(list):
 ##        # return a string? Have to fix this before debugging other things
 ##        return content
         
-
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         index = random.randint(0, self.size - 1)
@@ -145,7 +149,6 @@ class BinaryTree(list):
             return self.get_rand_terminal()
                 
         return index
-
 
     def get_rand_function(self):
         """Returns the index of a random function, or raises an error if tree
@@ -161,7 +164,6 @@ class BinaryTree(list):
 
         return index
     
-
     def get_subtree(self, n, depth=0):
         """Retrieves and returns as a list the subtree starting at index n"""
         if n >= len(self):
@@ -282,8 +284,7 @@ def read_data(filename):
 
 def get_depth(k):
     """Takes the size k of a binary tree and returns its depth"""
-    d = math.log2(k + 1) - 1
-    return d
+    return int(math.log2(k + 1) - 1)
 
 
 def next_level_size(k):
