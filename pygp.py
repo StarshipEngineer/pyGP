@@ -25,9 +25,9 @@ class Node(object):
 
 class BinaryTree(list):
 
-    def __init__(self, choice, depth, primitives, set_dict):
+    def __init__(self, choice, depth, primitives, set_dict, contents=[]):
         # include a way to initialize a tree to some particular set of values
-        # maybe variable number of arguments?
+        # maybe variable number of arguments? how to control the logic?
         self.primitives = primitives
         self.set_dict = set_dict
         self.depth = depth
