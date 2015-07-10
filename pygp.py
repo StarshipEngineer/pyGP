@@ -100,7 +100,7 @@ class BinaryTree(list):
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < m):
-            if parent is None or parent.value not in
+            if parent is None or parent.value not in \
             self.set_dict["functions"]:
                 self[n] = None
             else:
@@ -109,7 +109,7 @@ class BinaryTree(list):
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < s):
-            if parent is None or parent.value not in
+            if parent is None or parent.value not in \
             self.set_dict["functions"]:
                 self[n] = None
             else:
@@ -387,13 +387,21 @@ def subtree_crossover(population, n, variables, data):
     return subtree_crossover(population, n, variables, data)
 
 
-def subtree_mutation(max_depth, primitives, set_dict):
-    """"""
-    init_options = ['full', 'grow']
-    subtree = BinaryTree(random.choice(init_options),
-                         random.randint(0, max_depth), primitives, set_dict)
-    # test this! may need to add max _depth to global parameters
-    return _crossover(tree, subtree, random.randint(0, len(tree)-1), 0)
+def subtree_mutation(tree, primitives, set_dict, max_depth):
+    """Takes in a tree and paramters for generating a new tree, and returns
+    a copy of the original tree with a subtree replaced by the new tree
+    """
+    def choose_cross_pt():
+        index = random.randint(0, len(tree)-1) 
+        if tree[index] != None:
+            return index
+
+        return choose_cross_pt()
+
+    init_options = ['full', 'grow']    
+    subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
+                         random.randint(0, max_depth))    
+    return _crossover(tree, subtree, choose_cross_pt(), 0)
 
 
 def point_mutation():
@@ -404,6 +412,16 @@ def reproduction(population, n, variables, data):
     """"""
     pop_sample = sample(population, n)
     winner = _tournament(pop_sample, variables, data)
+    # test this!
     return winner
 
-# Another method that extracts headers and passes a tuple
+# Another method that extracts headers and passes a tuple for automatic variable generation
+
+def tree_list(tree):
+    contents = []
+    for item in tree:
+        try:
+            contents.append(item.value)
+        except AttributeError:
+           contents.append(None)
+    return contents
