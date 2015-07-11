@@ -164,6 +164,14 @@ class BinaryTree(list):
 
         return index
     
+    def get_rand_node(self):
+        index = random.randint(0, self.size-1) 
+        if self[index] != None:
+            return index
+
+        return self.get_rand_node()
+
+
     def get_subtree(self, n, depth=0):
         """Retrieves and returns as a list the subtree starting at index n"""
         if n >= len(self):
@@ -398,10 +406,10 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
 
         return choose_cross_pt()
 
-    init_options = ['full', 'grow']    
+    init_options = ['full', 'grow']
     subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
-                         random.randint(0, max_depth))    
-    return _crossover(tree, subtree, choose_cross_pt(), 0)
+                         random.randint(0, max_depth))
+    return _crossover(tree, subtree, tree.get_rand_node(), 0)
 
 
 def point_mutation():
