@@ -17,21 +17,26 @@ f = 'full'
 g = 'grow'
 ##
 ##
-tree1 = pygp.BinaryTree(primitives, set_dict, g, 1)
-tree2 = pygp.BinaryTree(primitives, set_dict, f, 2)
+tree1 = pygp.BinaryTree(primitives, set_dict, g, 2)
+##tree2 = pygp.BinaryTree(primitives, set_dict, f, 2)
 #tree3 = pygp.BinaryTree()
 
 #print(pygp.tree_list(tree1))
 #print(tree1.get_rand_node())
 
 #pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(100)]
+
 print("tree1:")
 print(pygp.tree_list(tree1))
 new = pygp.subtree_mutation(tree1, primitives, set_dict, max_depth)
 print("new tree:")
 print(pygp.tree_list(new))
 
+grow = pygp.BinaryTree(primitives, set_dict, ["+", "rand", "*", None, None, "rand", "x"])
 
+
+##print(pygp.tree_list(tree1))
+##print(tree1.prog)
 
 
 ##print(x)

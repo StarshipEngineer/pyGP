@@ -40,7 +40,8 @@ class BinaryTree(list):
         self.last_level = 2 ** self.depth - 1
         if values_provided:
             for i in range(len(contents)):
-                self[i] = Node(contents[i], primitives[contents[i]])
+                if contents[i] != None:
+                    self[i] = Node(contents[i], primitives[contents[i]])
         elif contents == 'full':
             self._full(self.size, self.last_level, 0)
         elif contents == 'grow':
@@ -116,9 +117,11 @@ class BinaryTree(list):
                 self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
 
     def _assemble(self, n=0):
+        #if self[n] != None:
+        
         left_index = self.get_left_index(n)
         right_index = self.get_right_index(n)
-        if (2 * n + 2) < self.size:
+        if (2*n+2) < self.size:
             left_child = self.get_left_child(n)
             right_child = self.get_right_child(n)
             left_s = ""
@@ -399,17 +402,27 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
     """Takes in a tree and paramters for generating a new tree, and returns
     a copy of the original tree with a subtree replaced by the new tree
     """
-    def choose_cross_pt():
-        index = random.randint(0, len(tree)-1) 
-        if tree[index] != None:
-            return index
-
-        return choose_cross_pt()
+##    def choose_cross_pt():
+##        index = random.randint(0, len(tree)-1) 
+##        if tree[index] != None:
+##            return index
+##
+##        return choose_cross_pt()
 
     init_options = ['full', 'grow']
-    subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
-                         random.randint(0, max_depth))
-    return _crossover(tree, subtree, tree.get_rand_node(), 0)
+    choice = random.choice(init_options)
+    d = random.randint(0, max_depth)
+    pt = tree.get_rand_node()
+
+    subtree = BinaryTree(primitives, set_dict, choice, d)
+
+    print("choice:", choice, "subtree depth:", d, "crossover point:", pt)
+    print("subtree:", tree_list(subtree))
+    
+    #subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
+#                         random.randint(0, max_depth))
+    #return _crossover(tree, subtree, tree.get_rand_node(), 0)
+    return _crossover(tree, subtree, pt, 0)
 
 
 def point_mutation():
