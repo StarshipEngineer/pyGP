@@ -26,44 +26,25 @@ tree1 = pygp.BinaryTree(primitives, set_dict, g, 2)
 
 #pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(100)]
 
+grow = pygp.BinaryTree(primitives, set_dict, ["+", "rand", "*", None, None, "rand", "x"])
+single = pygp.BinaryTree(primitives, set_dict, ["x", None, None, None, None, None, None])
+
 print("tree1:")
 print(pygp.tree_list(tree1))
+print(tree1.prog)
 new = pygp.subtree_mutation(tree1, primitives, set_dict, max_depth)
 print("new tree:")
 print(pygp.tree_list(new))
+print(new.prog)
 
-grow = pygp.BinaryTree(primitives, set_dict, ["+", "rand", "*", None, None, "rand", "x"])
+# if depth passed is zero, subtree is just None- find a way to fix this, then we're good
+# suspect problem may arise on line 40
 
+# any tree that is the product of crossover or mutation will need to have its program rebuilt
+# might it be better to just have crossover and mutation take and produce a list,
+# then initialize a new tree with it???
 
-##print(pygp.tree_list(tree1))
-##print(tree1.prog)
-
-
-##print(x)
-##def outer(x):
-##    y = []
-##    def inner(x):
-##        if x != 1:
-##            y.append(x)
-##        return y
-##
-##    return inner(x)
-##
-##print(outer(2))
-
-##def test(tree):
-##    """"""
-##
-##    def choose_cross_pt():
-##        index = random.randint(0, len(tree)-1) 
-##        if tree[index] != None:
-##            return index
-##
-##        return choose_cross_pt()
-##
-##    x = choose_cross_pt()
-##    return x
-
-##p = test(tree1)
-##print(pygp.tree_list(tree1))
-##print(p)
+##print(pygp.tree_list(grow))
+##print(grow.prog)
+##grow.prog = grow._build_prog()
+##print(grow.prog)
