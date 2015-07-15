@@ -101,6 +101,7 @@ class BinaryTree(list):
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < m):
+            # here it is, haven't accounted for root node?
             if parent is None or parent.value not in \
             self.set_dict["functions"]:
                 self[n] = None
@@ -115,27 +116,6 @@ class BinaryTree(list):
                 self[n] = None
             else:
                 self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
-
-    def _assemble(self, n=0):
-        #if self[n] != None:
-        
-        left_index = self.get_left_index(n)
-        right_index = self.get_right_index(n)
-        if (2*n+2) < self.size:
-            left_child = self.get_left_child(n)
-            right_child = self.get_right_child(n)
-            left_s = ""
-            right_s = ""
-            if left_child != None:
-                left_s = str(self._assemble(left_index))
-            if right_child != None:
-                right_s = str(self._assemble(right_index))
-            return "(" + left_s + self[n].value + right_s + ")"
-        #elif self[n] != None:
-        #elif n < self.size and self[n] != None:
-        else:
-            return self[n].value
-
 
     def _build_prog(self, n=0):
         strng = ""
