@@ -94,14 +94,21 @@ class BinaryTree(list):
 
     def _grow(self, s, m, n):
         """Populates the tree using the grow method"""
+
+        # somewhere in here is the problem- need to assign a terminal node to 0 if
+        # tree has length 1
+        
         parent = self.get_parent(n) # this needs to change as well
-        if n == 0 and self.depth >= 1:
-            prim = random.choice(self.set_dict["primitives"])
+        if n == 0: #and self.depth >= 1:
+            if self.depth >= 1:
+                prim = random.choice(self.set_dict["primitives"])
+            elif self.depth == 0:
+                prim = random.choice(self.set_dict["terminals"])
+
             self[n] = Node(prim, self.primitives[prim])
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
         elif (n < m):
-            # here it is, haven't accounted for root node?
             if parent is None or parent.value not in \
             self.set_dict["functions"]:
                 self[n] = None

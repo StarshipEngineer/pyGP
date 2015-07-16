@@ -21,21 +21,24 @@ tree1 = pygp.BinaryTree(primitives, set_dict, g, 2)
 ##tree2 = pygp.BinaryTree(primitives, set_dict, f, 2)
 #tree3 = pygp.BinaryTree()
 
-#print(pygp.tree_list(tree1))
-#print(tree1.get_rand_node())
+
+
+new = pygp.BinaryTree(primitives, set_dict, f, 0)
+print(pygp.tree_list(new))
+
 
 #pop = [pygp.BinaryTree(f, 2, primitives, set_dict) for i in range(100)]
 
-grow = pygp.BinaryTree(primitives, set_dict, ["+", "rand", "*", None, None, "rand", "x"])
-single = pygp.BinaryTree(primitives, set_dict, ["x", None, None, None, None, None, None])
+##grow = pygp.BinaryTree(primitives, set_dict, ["+", "rand", "*", None, None, "rand", "x"])
+##single = pygp.BinaryTree(primitives, set_dict, ["x", None, None, None, None, None, None])
 
-print("tree1:")
-print(pygp.tree_list(tree1))
-print(tree1.prog)
-new = pygp.subtree_mutation(tree1, primitives, set_dict, max_depth)
-print("new tree:")
-print(pygp.tree_list(new))
-print(new.prog)
+##print("tree1:")
+##print(pygp.tree_list(tree1))
+##print(tree1.prog)
+##new = pygp.subtree_mutation(tree1, primitives, set_dict, max_depth)
+##print("new tree:")
+##print(pygp.tree_list(new))
+##print(new.prog)
 
 # if depth passed is zero, subtree is just None- find a way to fix this, then we're good
 # suspect problem may arise on line 40
