@@ -6,9 +6,6 @@ import copy
 
 
 primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0}
-# is imported by user in program, passed as prims to trees
-
-#primset = arity2functions
 
 
 class Node(object):
@@ -20,7 +17,6 @@ class Node(object):
             self.value = value
 
         self.arity = arity
-        # this takes care of random value generation, no special functionality required in writing
 
 
 class BinaryTree(list):
@@ -99,7 +95,7 @@ class BinaryTree(list):
         # tree has length 1
         
         parent = self.get_parent(n) # this needs to change as well
-        if n == 0: #and self.depth >= 1:
+        if n == 0: #and self.depth >= 1: switch order, do if equal zero and else
             if self.depth >= 1:
                 prim = random.choice(self.set_dict["primitives"])
             elif self.depth == 0:
