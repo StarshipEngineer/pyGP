@@ -413,16 +413,12 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
     pt = tree.get_rand_node()
 
     subtree = BinaryTree(primitives, set_dict, choice, d)
-
-    print("choice:", choice, "subtree depth:", d, "crossover point:", pt)
-    print("subtree:", tree_list(subtree))
-    # test more!
     
     #subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
 #                         random.randint(0, max_depth))
     #return _crossover(tree, subtree, tree.get_rand_node(), 0)
     new = _crossover(tree, subtree, pt, 0)
-#    new.prog = new._build_prog()
+    new.prog = new._build_prog()
     return new
 
 

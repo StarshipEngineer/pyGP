@@ -21,9 +21,12 @@ mut_rate = 1.0
 
 # Generation loop:
 # Populate the generation
-# 
+#
 
-new = pygp.subtree_crossover(pop, 3,variables, data)
+tree = pygp.BinaryTree(p, s, 'grow', 2)
+print(pygp.tree_list(tree), tree.prog)
+
+new = pygp.subtree_mutation(tree, p, s, 2)
 print()
 print(pygp.tree_list(new))
 print(new.prog)
