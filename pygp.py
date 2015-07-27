@@ -388,6 +388,8 @@ def subtree_crossover(population, n, variables, data):
         cross_pt1 = first_parent.get_rand_terminal()
         cross_pt2 = second_parent.get_rand_terminal()
 
+# copy above segment for crosspt2
+
     if exception_occurred == False:
         new = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
         new.prog = new._build_prog()
