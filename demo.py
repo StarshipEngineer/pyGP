@@ -1,23 +1,24 @@
-# Import modules
 import pygp
 import math
 import random
 
-variables = ("r")
-prim_dict = pygp.primitives
-primitives = pygp.primitive_handler(prim_dict, variables)
+variables = ["x"]
+p = pygp.primitives
+s = pygp.primitive_handler(p, variables)
 
 filename = "datafile.csv"
-data = pygp.dataread(filename)
+data = pygp.read_data(filename)
 
-popsize = 100
-pop = []
-pop.extend([None]*popsize)
+popsize = 5
+
+pop = [pygp.BinaryTree(p, s, 'full', 1) for x in range(popsize)]
 
 cross_rate = 0.9
 rep_rate = 0.98
 mut_rate = 1.0
 
-# Select inidividuals from the population, test their fitness,
-# and use them to populate the next generation
+
+# Generation loop:
+# Populate the generation
+# 
 
