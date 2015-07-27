@@ -379,24 +379,27 @@ def subtree_crossover(population, n, variables, data):
     exception_occurred = False
     first_parent = _tournament(population, n, variables, data)
     second_parent = _tournament(population, n, variables, data)
-    choice = random.random()
-    if choice < 0.9:
+    choice1 = random.random()
+    choice2 = random.random()
+    if choice1 < 0.9:
         try:
             cross_pt1 = first_parent.get_rand_function()
-            cross_pt2 = second_parent.get_rand_function()
         except NodeSelectionError:
             exception_occurred = True
     else:
         cross_pt1 = first_parent.get_rand_terminal()
+
+    if choice2 < 0.9:
+        try:
+            cross_pt2 = second_parent.get_rand_function()
+        except NodeSelectionError:
+            exception_occurred = True
+    else:
         cross_pt2 = second_parent.get_rand_terminal()
 
-# copy above segment for crosspt2
+    if exception_occurred == False:        
+        return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
 
-    if exception_occurred == False:
-        new = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
-        new.prog = new._build_prog()
-        return new
-# change to independently select crossover points
     return subtree_crossover(population, n, variables, data)
 
 
