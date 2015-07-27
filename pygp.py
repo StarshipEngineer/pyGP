@@ -5,7 +5,7 @@ import math
 import copy
 
 
-primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0}
+primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "math.pi":0}
 
 
 class Node(object):
@@ -17,6 +17,11 @@ class Node(object):
             self.value = value
 
         self.arity = arity
+
+
+class LinearTree(list):
+    def __init__(self):
+        pass
 
 
 class BinaryTree(list):
@@ -224,6 +229,26 @@ class BinaryTree(list):
         self._pad(n, subtree)
         self._fill_subtree(n, subtree)
 
+    def fitness(self, variables, dataset):
+        """variables is a list of strings denoting variable names, and dataset is
+        a list of tuples of floats denoting variable values
+        """
+        self.prog = self._build_prog()
+        m = len(variables)
+        tot_err = 0
+        for item in dataset:
+            for i in range(m):
+                vars()[variables[i]] = item[i]
+            try:
+                dvar_actual = eval(variables[-1])
+                dvar_calc = eval(self.prog)
+                err = abs(dvar_actual - dvar_calc)
+                tot_err = tot_err + err
+            except ZeroDivisionError:
+                raise SingularityError
+        
+        return tot_err
+
 
 """Error classes"""
 
@@ -306,29 +331,6 @@ def next_level_size(k):
 
 """Functions used in fitness evaluation, recombination, and mutation"""
 
-
-def _fitness(tree, variables, dataset):
-    """variables is a tuple of strings denoting variable names, and dataset is
-    a list of tuples of floats denoting variable values
-    """
-    m = len(variables)
-    var_list = [] # could just convert tuple to a list
-    var_list.extend(variables)
-    tot_err = 0
-    for item in dataset:
-        for i in range(m):
-            vars()[var_list[i]] = item[i]
-        try:
-            dvar_actual = eval(var_list[-1])
-            dvar_calc = eval(tree.prog)
-            err = abs(dvar_actual - dvar_calc)
-            tot_err = tot_err + err
-        except ZeroDivisionError:
-            raise SingularityError
-    
-    return tot_err
-
-
 def _sample(population, n):
     """A wrapper for the random module's sample function"""
     pop_sample = random.sample(population, n)
@@ -345,7 +347,7 @@ def _tournament(population, n, variables, data):
     best_score = None
     for item in pop_sample:
         try:
-            score = _fitness(item, variables, data)
+            score = item.fitness(variables, data)
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
@@ -392,7 +394,7 @@ def subtree_crossover(population, n, variables, data):
         new = _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
         new.prog = new._build_prog()
         return new
-    
+# change to independently select crossover points
     return subtree_crossover(population, n, variables, data)
 
 
@@ -409,12 +411,13 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
 
     print("choice:", choice, "subtree depth:", d, "crossover point:", pt)
     print("subtree:", tree_list(subtree))
+    # test more!
     
     #subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
 #                         random.randint(0, max_depth))
     #return _crossover(tree, subtree, tree.get_rand_node(), 0)
     new = _crossover(tree, subtree, pt, 0)
-    new.prog = new._build_prog()
+#    new.prog = new._build_prog()
     return new
 
 
@@ -424,9 +427,10 @@ def point_mutation():
 
 def reproduction(population, n, variables, data):
     """"""
-    pop_sample = sample(population, n)
-    winner = _tournament(pop_sample, variables, data)
-    # test this!
+    #pop_sample = sample(population, n)
+    #winner = _tournament(pop_sample, variables, data)
+    winner = _tournament(population, n, variables, data)
+    # test this! Might need error handling, make it recursive
     return winner
 
 # Another method that extracts headers and passes a tuple for automatic variable generation
