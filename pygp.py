@@ -408,16 +408,9 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
     a copy of the original tree with a subtree replaced by the new tree
     """
     init_options = ['full', 'grow']
-    choice = random.choice(init_options)
-    d = random.randint(0, max_depth)
-    pt = tree.get_rand_node()
-
-    subtree = BinaryTree(primitives, set_dict, choice, d)
-    
-    #subtree = BinaryTree(primitives, set_dict, random.choice(init_options),
-#                         random.randint(0, max_depth))
+    subtree = BinaryTree(primitives, set_dict, random.choice(init_options), random.randint(0, max_depth))
     #return _crossover(tree, subtree, tree.get_rand_node(), 0)
-    new = _crossover(tree, subtree, pt, 0)
+    new = _crossover(tree, subtree, tree.get_rand_node(), 0)
     new.prog = new._build_prog()
     return new
 
