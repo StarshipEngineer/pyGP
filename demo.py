@@ -1,16 +1,22 @@
 # Import modules
 import pygp
+import math
+import random
 
-# Define the function and terminal sets
-functions = []
-terminals = []
-primitives = functions + terminals
+variables = ("r")
+prim_dict = pygp.primitives
+primitives = pygp.primitive_handler(prim_dict, variables)
 
-# Import your data to fit
 filename = "datafile.csv"
 data = pygp.dataread(filename)
 
-# Construct an initial population
+popsize = 100
+pop = []
+pop.extend([None]*popsize)
+
+cross_rate = 0.9
+rep_rate = 0.98
+mut_rate = 1.0
 
 # Select inidividuals from the population, test their fitness,
 # and use them to populate the next generation

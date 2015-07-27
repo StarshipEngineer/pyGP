@@ -301,8 +301,7 @@ def next_level_size(k):
     """
     d = get_depth(k)
     d = d + 1
-    next_level_size = 2 ** d
-    return next_level_size
+    return 2 ** d
 
 
 """Functions used in fitness evaluation, recombination, and mutation"""
