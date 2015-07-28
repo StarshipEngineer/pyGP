@@ -418,7 +418,9 @@ def reproduction(population, n, variables, data):
     winner = _tournament(population, n, variables, data)
     return copy.deepcopy(winner)
 
-# Another method that extracts headers and passes a tuple for automatic variable generation
+##Another method that extracts headers and passes a tuple for automatic variable
+##generation; could import a data file as a list of tuples and then use pop to
+##return the headers
 
 def tree_list(tree):
     contents = []
