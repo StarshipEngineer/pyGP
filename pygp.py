@@ -48,8 +48,6 @@ class BinaryTree(list):
         elif contents == 'grow':
             self._grow(self.size, self.last_level, 0)
 
-        self.prog = self._build_prog()
-
     def get_left_index(self, n):
         return 2 * n + 1
 
@@ -125,12 +123,12 @@ class BinaryTree(list):
             else:
                 self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
 
-    def _build_prog(self, n=0):
+    def build_program(self, n=0):
         strng = ""
         if n < self.size and self[n] != None:
             strng = self[n].value
-            left = self._build_prog(2*n+1)
-            right = self._build_prog(2*n+2)
+            left = self.build_program(2*n+1)
+            right = self.build_program(2*n+2)
             strng = "(" + left + strng + right + ")"
 
         return strng
@@ -229,26 +227,6 @@ class BinaryTree(list):
         self._pad(n, subtree)
         self._fill_subtree(n, subtree)
 
-    def fitness(self, variables, dataset):
-        """variables is a list of strings denoting variable names, and dataset is
-        a list of tuples of floats denoting variable values
-        """
-        self.prog = self._build_prog()
-        m = len(variables)
-        tot_err = 0
-        for item in dataset:
-            for i in range(m):
-                vars()[variables[i]] = item[i]
-            try:
-                dvar_actual = eval(variables[-1])
-                dvar_calc = eval(self.prog)
-                err = abs(dvar_actual - dvar_calc)
-                tot_err = tot_err + err
-            except ZeroDivisionError:
-                raise SingularityError
-        
-        return tot_err
-
 
 """Error classes"""
 
@@ -277,22 +255,19 @@ function crossover cannot be performed'
 
 def primitive_handler(prim_dict, variables):
     """Sorts a dictionary of primitive/arity pairs into a dictionary of
-    lists containing terminals, functions, and primitives
+    lists containing terminals, functions, primitives, and variables
     """
-    for item in variables:
-        prim_dict[item] = 0
-
     functions = []
     terminals = []
     for key in prim_dict:
-        arity = prim_dict[key]
-        if arity == 0:
+        if prim_dict[key] == 0:
             terminals.append(key)
         else:
             functions.append(key)
 
     primitives = functions + terminals
-    return {"primitives":primitives, "functions":functions, "terminals":terminals}
+    return {"primitives":primitives, "functions":functions,
+            "terminals":terminals, "variables":variables}
 
 
 def read_data(filename):
@@ -331,6 +306,26 @@ def next_level_size(k):
 
 """Functions used in fitness evaluation, recombination, and mutation"""
 
+def fitness(tree, variables, dataset):
+    """variables is a list of strings denoting variable names, and dataset is
+    a list of tuples of floats denoting variable values
+    """
+    prog = tree.build_program()
+    m = len(variables)
+    tot_err = 0
+    for item in dataset:
+        for i in range(m):
+            vars()[variables[i]] = item[i]
+        try:
+            dvar_actual = eval(variables[-1])
+            dvar_calc = eval(prog)
+            err = abs(dvar_actual - dvar_calc)
+            tot_err = tot_err + err
+        except ZeroDivisionError:
+            raise SingularityError
+    
+    return tot_err
+
 def _sample(population, n):
     """A wrapper for the random module's sample function"""
     pop_sample = random.sample(population, n)
@@ -347,7 +342,7 @@ def _tournament(population, n, variables, data):
     best_score = None
     for item in pop_sample:
         try:
-            score = item.fitness(variables, data)
+            score = fitness(item, variables, data)
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
@@ -409,10 +404,7 @@ def subtree_mutation(tree, primitives, set_dict, max_depth):
     """
     init_options = ['full', 'grow']
     subtree = BinaryTree(primitives, set_dict, random.choice(init_options), random.randint(0, max_depth))
-    #return _crossover(tree, subtree, tree.get_rand_node(), 0)
-    new = _crossover(tree, subtree, tree.get_rand_node(), 0)
-    new.prog = new._build_prog()
-    return new
+    return _crossover(tree, subtree, tree.get_rand_node(), 0)
 
 
 def point_mutation():
@@ -420,12 +412,11 @@ def point_mutation():
 
 
 def reproduction(population, n, variables, data):
-    """"""
-    #pop_sample = sample(population, n)
-    #winner = _tournament(pop_sample, variables, data)
+    """Performs a single tournament selection and returns a copy of the most
+    fit individual
+    """
     winner = _tournament(population, n, variables, data)
-    # test this! Might need error handling, make it recursive
-    return winner
+    return copy.deepcopy(winner)
 
 # Another method that extracts headers and passes a tuple for automatic variable generation
 
