@@ -25,8 +25,8 @@ data = pygp.read_data(filename)
 """Step 4
 Set run parameters.
 """
-popsize = 10
-max_depth = 2
+popsize = 100
+max_depth = 3
 cross_rate = 0.89
 rep_rate = 0.97
 mut_rate = 1.0
@@ -38,10 +38,23 @@ fitness = 1
 
 """Initialization"""
 pop = []
+half = int(popsize / 2)
+allowed_depths = range(1, max_depth+1)
+trees_per_depth = int(half / len(allowed_depths))
+
+print(popsize)
+print(half)
+print(allowed_depths)
+print(trees_per_depth)
+
 # fill half of pop with full trees; for depth
-
-# fill other half with grow trees
-
+##for i in range(half):
+##    for d in allowed_depths:
+##        for m in range(int(half/len(range(1, max_depth)))):
+##    
+### fill other half with grow trees
+##for i in range(half, popsize+1):
+##    pass
 
 
 pop = [pygp.BinaryTree(p, s, 'grow', 2) for x in range(popsize)]
