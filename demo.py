@@ -25,7 +25,7 @@ data = pygp.read_data(filename)
 """Step 4
 Set run parameters.
 """
-popsize = 100
+popsize = 10
 max_depth = 3
 cross_rate = 0.89
 rep_rate = 0.97
@@ -46,3 +46,8 @@ for i in range(half):
     
 for i in range(half, popsize+1):
     pop.append(pygp.BinaryTree(p, s, "grow", random.randint(1, max_depth)))
+
+"""
+
+"""
+# evaluate each tree to see if it satisfies termination criterion

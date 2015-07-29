@@ -305,7 +305,9 @@ def next_level_size(k):
 
 
 """Functions used in fitness evaluation, recombination, and mutation"""
-
+# put fitness back as a tree method? can directly access variables that way
+# or could just use tree's variables from its set_dict attribute- do this instead!
+# the latter option preserves encapsulation and still simplifies things
 def fitness(tree, variables, dataset):
     """variables is a list of strings denoting variable names, and dataset is
     a list of tuples of floats denoting variable values
