@@ -379,6 +379,7 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
 
 
 def termination_test(population, data):
+# test this- problem likely here
     """Tests the fitness of every member of the population, returning the
     individual with the best fitness and that fitness as a tuple
     """
