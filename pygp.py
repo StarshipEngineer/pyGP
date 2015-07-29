@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+"""This module contains all of the classes and functions required for a
+basic symbolic-regression implementation of genetic programming, including
+classes binary trees and nodes to fill them, recombination and mutation
+operations, and basic data-handling functionality.
+"""
+
+
 
 import random
 import math
@@ -308,18 +315,19 @@ def next_level_size(k):
 # put fitness back as a tree method? can directly access variables that way
 # or could just use tree's variables from its set_dict attribute- do this instead!
 # the latter option preserves encapsulation and still simplifies things
-def fitness(tree, variables, dataset):
+def fitness(tree, dataset):
     """variables is a list of strings denoting variable names, and dataset is
     a list of tuples of floats denoting variable values
     """
     prog = tree.build_program()
-    m = len(variables)
+    v = tree.set_dict["variables"]
+    m = len(v)
     tot_err = 0
     for item in dataset:
         for i in range(m):
-            vars()[variables[i]] = item[i]
+            vars()[v[i]] = item[i]
         try:
-            dvar_actual = eval(variables[-1])
+            dvar_actual = eval(v[-1])
             dvar_calc = eval(prog)
             err = abs(dvar_actual - dvar_calc)
             tot_err = tot_err + err
@@ -334,7 +342,7 @@ def _sample(population, n):
     return pop_sample
 
 
-def _tournament(population, n, variables, data):
+def tournament(population, n, data):
     """Performs tournament selection, randomly choosing n individuals from the
     population and thunderdome-ing it, returning the individual with the best
     fitness
@@ -344,7 +352,7 @@ def _tournament(population, n, variables, data):
     best_score = None
     for item in pop_sample:
         try:
-            score = fitness(item, variables, data)
+            score = fitness(item, data)
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
@@ -366,16 +374,35 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
     return tree1copy
 
 
+def termination_test(population, data):
+    """Tests the fitness of every member of the population, returning the
+    individual with the best fitness and that fitness as a tuple
+    """
+    pop_sample = _sample(population, len(population)-1)
+    best = None
+    best_score = None
+    for item in pop_sample:
+        try:
+            score = fitness(item, data)
+            if (best_score == None) or (score < best_score):
+                best = item
+                best_score = score
+        except SingularityError:
+            pass
+
+    return best, best_score
+
+
 """Tree recombination and mutation functions for user use"""
 
 
-def subtree_crossover(population, n, variables, data):
+def subtree_crossover(population, n, data):
     """Takes a population, performs 2 tournament selections with sample size n,
     performs subtree crossover on the winners, and returns a new tree
     """
     exception_occurred = False
-    first_parent = _tournament(population, n, variables, data)
-    second_parent = _tournament(population, n, variables, data)
+    first_parent = tournament(population, n, data)
+    second_parent = tournament(population, n, data)
     choice1 = random.random()
     choice2 = random.random()
     if choice1 < 0.9:
@@ -397,15 +424,18 @@ def subtree_crossover(population, n, variables, data):
     if exception_occurred == False:        
         return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
 
-    return subtree_crossover(population, n, variables, data)
+    return subtree_crossover(population, n, data)
 
 
-def subtree_mutation(tree, primitives, set_dict, max_depth):
+def subtree_mutation(tree, max_depth):
+    # shouldn't need p or s- alreayd stored in tree!
     """Takes in a tree and paramters for generating a new tree, and returns
     a copy of the original tree with a subtree replaced by the new tree
     """
+    p = tree.primitives
+    s = tree.set_dict
     init_options = ['full', 'grow']
-    subtree = BinaryTree(primitives, set_dict, random.choice(init_options), random.randint(0, max_depth))
+    subtree = BinaryTree(p, s, random.choice(init_options), random.randint(0, max_depth))
     return _crossover(tree, subtree, tree.get_rand_node(), 0)
 
 
@@ -413,11 +443,11 @@ def point_mutation():
     pass
 
 
-def reproduction(population, n, variables, data):
+def reproduction(population, n, data):
     """Performs a single tournament selection and returns a copy of the most
     fit individual
     """
-    winner = _tournament(population, n, variables, data)
+    winner = tournament(population, n, data)
     return copy.deepcopy(winner)
 
 ##Another method that extracts headers and passes a tuple for automatic variable
