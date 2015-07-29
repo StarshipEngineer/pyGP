@@ -356,9 +356,13 @@ def tournament(population, n, data):
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
+            #
+            #print("tree:", tree_list(item))
+            #print("score", score)
+            #
         except SingularityError:
             pass
-    
+    #print("best:", tree_list(best))
     return best
 
 

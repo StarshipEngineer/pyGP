@@ -2,25 +2,28 @@ import pygp
 import math
 import random
 
+
 """Prepatory steps"""
+
 
 """Steps 1 & 2
 Specify the function and terminal sets.
 """
 p = pygp.primitives
-v = ["x"]
+v = ["r"]
 for item in v:
     p[item] = 0
-
 s = pygp.primitive_handler(p, v)
+
 
 """Step 3
 Define the fitness measure. This is the pygp.fitness function found
 in the pygp module; the data this fitness function will use to evaluate evolved
 programs and determine their fitnesses is imported below.
 """
-filename = "datafile.csv"
+filename = "circlearea.csv"
 data = pygp.read_data(filename)
+
 
 """Step 4
 Set run parameters.
@@ -32,10 +35,15 @@ rep_rate = 0.98
 mut_rate = 1.0
 tourn_size = 10
 
+
 """Step 5
 Specify termination condition.
 """
 target_fitness = 1
+
+
+"""Running GP"""
+
 
 """Initialization
 An initial population is generated, in this case using the ramped half-and-half
@@ -49,6 +57,7 @@ for i in range(1, half):
     
 for i in range(half, popsize+1):
     pop.append(pygp.BinaryTree(p, s, "grow", random.randint(1, max_depth)))
+
 
 """Evolve the population toward a solution
 Continue evolving the population until an individual
