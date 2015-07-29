@@ -36,31 +36,13 @@ Specify termination condition.
 """
 fitness = 1
 
-"""Initialization"""
+"""Initialization
+
+"""
 pop = []
 half = int(popsize / 2)
-allowed_depths = range(1, max_depth+1)
-trees_per_depth = int(half / len(allowed_depths))
-
-print(popsize)
-print(half)
-print(allowed_depths)
-print(trees_per_depth)
-
-# fill half of pop with full trees; for depth
-##for i in range(half):
-##    for d in allowed_depths:
-##        for m in range(int(half/len(range(1, max_depth)))):
-##    
-### fill other half with grow trees
-##for i in range(half, popsize+1):
-##    pass
-
-
-pop = [pygp.BinaryTree(p, s, 'grow', 2) for x in range(popsize)]
-
-
-
-
-
-#tree = pygp.BinaryTree(p, s, 'grow', 2)
+for i in range(half):
+    pop.append(pygp.BinaryTree(p, s, "full", random.randint(1, max_depth)))
+    
+for i in range(half, popsize+1):
+    pop.append(pygp.BinaryTree(p, s, "grow", random.randint(1, max_depth)))
