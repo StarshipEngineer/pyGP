@@ -10,6 +10,7 @@ operations, and basic data-handling functionality.
 import random
 import math
 import copy
+import decimal
 
 
 primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "math.pi":0}
@@ -312,29 +313,32 @@ def next_level_size(k):
 
 
 """Functions used in fitness evaluation, recombination, and mutation"""
-# put fitness back as a tree method? can directly access variables that way
-# or could just use tree's variables from its set_dict attribute- do this instead!
-# the latter option preserves encapsulation and still simplifies things
+
+
 def fitness(tree, dataset):
     """variables is a list of strings denoting variable names, and dataset is
     a list of tuples of floats denoting variable values
     """
+    #
+    decimal.getcontext().prec = 10
+    #
     prog = tree.build_program()
-    v = tree.set_dict["variables"]
-    m = len(v)
+    variables = tree.set_dict["variables"]
+    m = len(variables)
     tot_err = 0
     for item in dataset:
         for i in range(m):
-            vars()[v[i]] = item[i]
+            vars()[variables[i]] = item[i]
         try:
-            dvar_actual = eval(v[-1])
-            dvar_calc = eval(prog)
+            dvar_actual = decimal.Decimal(item[-1])
+            dvar_calc = decimal.Decimal(eval(prog)) # have a problem here for some cases
             err = abs(dvar_actual - dvar_calc)
             tot_err = tot_err + err
         except ZeroDivisionError:
             raise SingularityError
-    
+
     return tot_err
+
 
 def _sample(population, n):
     """A wrapper for the random module's sample function"""

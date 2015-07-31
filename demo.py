@@ -10,7 +10,7 @@ import random
 Specify the function and terminal sets.
 """
 p = pygp.primitives
-v = ["r"]
+v = ["x", "y"]
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
@@ -21,7 +21,7 @@ Define the fitness measure. This is the pygp.fitness function found
 in the pygp module; the data this fitness function will use to evaluate evolved
 programs and determine their fitnesses is imported below.
 """
-filename = "circlearea.csv"
+filename = "datafile.csv"
 data = pygp.read_data(filename)
 
 
@@ -33,7 +33,7 @@ max_depth = 3
 cross_rate = 0.90
 rep_rate = 0.98
 mut_rate = 1.0
-tourn_size = 10
+tourn_size = 5
 
 
 """Step 5
@@ -70,7 +70,8 @@ def evolve(pop, generation=1):
     at which point it returns a dictionary with the solution program and
     other info.
     """
-    best_in_gen = pygp.termination_test(pop, data)
+    print(generation)
+    best_in_gen = pygp.termination_test(pop, data) # include a program return
     
     if best_in_gen[1] < target_fitness:
         return {"best":best_in_gen[0], "score":best_in_gen[1],
@@ -93,7 +94,9 @@ def evolve(pop, generation=1):
     return evolve(next_gen, generation+1)
 
 """Results of the run"""
-solution = evolve(pop)
-print(pygp.tree_list(solution["best"]))
-print(solution["score"])
-print(solution["gen"])
+solutioninfo = evolve(pop)
+winner = solutioninfo["best"]
+print(pygp.tree_list(winner))
+##print(winner.build_program)
+print(solutioninfo["score"])
+print(solutioninfo["gen"])
