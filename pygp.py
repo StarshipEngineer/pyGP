@@ -336,7 +336,10 @@ def fitness(tree, dataset):
             tot_err = tot_err + err
         except ZeroDivisionError:
             raise SingularityError
-
+#
+        except OverflowError:
+            print(tree_list(tree))
+#
     return tot_err
 
 
