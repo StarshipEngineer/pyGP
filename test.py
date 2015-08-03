@@ -44,7 +44,8 @@ def fitness(tree, dataset):
 
 #tree = pygp.BinaryTree(p, s, ["*", "math.pi", "*", None, None, "r", "r"])
 #tree = pygp.BinaryTree(p, s, ["+", "x", "y"])
-tree = pygp.BinaryTree(p, s, 'full', 2)
+#tree = pygp.BinaryTree(p, s, 'full', 2)
+tree = pygp.BinaryTree(p, s, ['**', '-', '**', '+', '*', '**', '+', 'r', 'math.pi', '0.6230005876558375', 'r', 'math.pi', 'math.pi', 'math.pi', '0.5060062922851026'])
 print(pygp.tree_list(tree))
 print(tree.build_program())
 print(fitness(tree, data))

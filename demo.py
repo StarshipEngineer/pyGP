@@ -10,7 +10,7 @@ import random
 Specify the function and terminal sets.
 """
 p = pygp.primitives
-v = ["x", "y"]
+v = ["r"]
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
@@ -21,14 +21,14 @@ Define the fitness measure. This is the pygp.fitness function found
 in the pygp module; the data this fitness function will use to evaluate evolved
 programs and determine their fitnesses is imported below.
 """
-filename = "datafile.csv"
+filename = "circlearea.csv"
 data = pygp.read_data(filename)
 
 
 """Step 4
 Set run parameters.
 """
-popsize = 20
+popsize = 100
 max_depth = 3
 cross_rate = 0.90
 rep_rate = 0.98

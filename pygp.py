@@ -330,15 +330,17 @@ def fitness(tree, dataset):
         for i in range(m):
             vars()[variables[i]] = item[i]
         try:
-            dvar_actual = decimal.Decimal(item[-1])
-            dvar_calc = decimal.Decimal(eval(prog)) # have a problem here for some cases
+            dvar_actual = item[-1]
+            dvar_calc = eval(prog) # have a problem here for some cases
             err = abs(dvar_actual - dvar_calc)
             tot_err = tot_err + err
         except ZeroDivisionError:
             raise SingularityError
 #
         except OverflowError:
+            print("An overflow error occurred. The offending program was:")
             print(tree_list(tree))
+            print()
 #
     return tot_err
 
