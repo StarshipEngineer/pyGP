@@ -21,7 +21,7 @@ def fitness(tree, dataset):
     a list of tuples of floats denoting variable values
     """
     #
-    decimal.getcontext().prec = 10
+    #decimal.getcontext().prec = 10
     #
     prog = tree.build_program()
     variables = tree.set_dict["variables"]
@@ -31,8 +31,8 @@ def fitness(tree, dataset):
         for i in range(m):
             vars()[variables[i]] = item[i]
         try:
-            dvar_actual = decimal.Decimal(item[-1])
-            dvar_calc = decimal.Decimal(eval(prog)) # have a problem here for some cases
+            dvar_actual = item[-1]
+            dvar_calc = eval(prog) # have a problem here for some cases
             err = abs(dvar_actual - dvar_calc)
             tot_err = tot_err + err
         except ZeroDivisionError:
@@ -42,13 +42,20 @@ def fitness(tree, dataset):
 
 
 
-#tree = pygp.BinaryTree(p, s, ["*", "math.pi", "*", None, None, "r", "r"])
+tree = pygp.BinaryTree(p, s, ["*", "pi", "*", None, None, "r", "r"])
 #tree = pygp.BinaryTree(p, s, ["+", "x", "y"])
 #tree = pygp.BinaryTree(p, s, 'full', 2)
-tree = pygp.BinaryTree(p, s, ['**', '-', '**', '+', '*', '**', '+', 'r', 'math.pi', '0.6230005876558375', 'r', 'math.pi', 'math.pi', 'math.pi', '0.5060062922851026'])
+b = ['**', '-', '**', '+', '*', '**', '+', 'r', 'math.pi', 'rand', 'r', 'math.pi', 'math.pi', 'math.pi', 'rand']
+c = ['**', '-', '**', '+', '*', '**', '+', 'r', 'pi', 'rand', 'r', 'pi', 'pi', 'pi', 'rand']
+#tree = pygp.BinaryTree(p, s, c)
 print(pygp.tree_list(tree))
 print(tree.build_program())
-print(fitness(tree, data))
- 
+print()
+print(pygp.fitness(tree, data))
+# think the problem is that no matter what type a number is to begin with, it evaluates to a float after being converted to a string
 
+##decimal.getcontext().prec = 10
+##pi = decimal.Decimal(math.pi)
+##exp = 5 ** ((pi ** pi) ** pi) # this is what does it!
+##print(exp)
 

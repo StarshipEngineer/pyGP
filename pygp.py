@@ -12,15 +12,17 @@ import math
 import copy
 import decimal
 
+decimal.getcontext().prec = 15
+pi = decimal.Decimal(math.pi) #Builds in decimal conversion to prevent overflow
 
-primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "math.pi":0}
+primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "pi":0}
 
 
 class Node(object):
     """"""
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = str(random.random())
+            self.value = "decimal.Decimal(%s)" % random.random()
         else:
             self.value = value
 
@@ -288,7 +290,7 @@ def read_data(filename):
         line_string = line.rstrip('\n')
         line_list = line_string.split(',')
         for i in range(len(line_list)):
-            line_list[i] = float(line_list[i])
+            line_list[i] = decimal.Decimal(line_list[i])
         line_tuple = tuple(line_list)
         data.append(line_tuple)
     file.close()
@@ -320,7 +322,7 @@ def fitness(tree, dataset):
     a list of tuples of floats denoting variable values
     """
     #
-    decimal.getcontext().prec = 10
+    #decimal.getcontext().prec = 10
     #
     prog = tree.build_program()
     variables = tree.set_dict["variables"]
@@ -339,6 +341,10 @@ def fitness(tree, dataset):
 #
         except OverflowError:
             print("An overflow error occurred. The offending program was:")
+            print(tree_list(tree))
+            print()
+        except decimal.InvalidOperation:
+            print("A decimal op error occurred. The offending program was:")
             print(tree_list(tree))
             print()
 #
