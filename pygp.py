@@ -344,9 +344,10 @@ def fitness(tree, dataset):
             print(tree_list(tree))
             print()
         except decimal.InvalidOperation:
-            print("A decimal op error occurred. The offending program was:")
-            print(tree_list(tree))
-            print()
+            #print("A decimal op error occurred. The offending program was:")
+            #print(tree_list(tree))
+            #print()
+            pass
 #
     return tot_err
 
@@ -449,7 +450,7 @@ def subtree_crossover(population, n, data):
 
 def subtree_mutation(tree, max_depth):
     # shouldn't need p or s- alreayd stored in tree!
-    """Takes in a tree and paramters for generating a new tree, and returns
+    """Takes in a tree and parameters for generating a new tree, and returns
     a copy of the original tree with a subtree replaced by the new tree
     """
     p = tree.primitives

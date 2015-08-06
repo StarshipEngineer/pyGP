@@ -39,7 +39,7 @@ tourn_size = 5
 """Step 5
 Specify termination condition.
 """
-target_fitness = 1
+target_fitness = 0.00001
 
 
 """Running GP"""

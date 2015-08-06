@@ -7,7 +7,6 @@ import decimal
 
 p = pygp.primitives
 v = ["r"]
-#v = ["r"]
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
@@ -28,3 +27,6 @@ print(pygp.tree_list(tree))
 print(tree.build_program())
 print()
 print(pygp.fitness(tree, data))
+#print(pygp.fitness(tree2, data))
+
+
