@@ -339,8 +339,8 @@ def fitness(tree, dataset):
         except ZeroDivisionError:
             raise SingularityError
 #
-        except OverflowError:
-            print("An overflow error occurred. The offending program was:")
+        except decimal.Overflow:
+            print("An overflow occurred. The offending program was:")
             print(tree_list(tree))
             print()
         except decimal.InvalidOperation:
