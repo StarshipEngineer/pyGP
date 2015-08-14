@@ -1,4 +1,4 @@
-import gpython
+import pygp
 import math
 import random
 

@@ -63,7 +63,7 @@ class BinaryTree(list):
 
     def get_right_index(self, n):
         return 2 * n + 2
-        
+
     def get_parent_index(self, n):
         return int( (n - 1) / 2)
 
@@ -106,7 +106,7 @@ class BinaryTree(list):
 
         # somewhere in here is the problem- need to assign a terminal node to 0 if
         # tree has length 1
-        
+
         parent = self.get_parent(n) # this needs to change as well
         if n == 0: #and self.depth >= 1: switch order, do if equal zero and else
             if self.depth >= 1:
@@ -153,14 +153,14 @@ class BinaryTree(list):
 ##                content.append(None)
 ##        # return a string? Have to fix this before debugging other things
 ##        return content
-        
+
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         index = random.randint(0, self.size - 1)
         if (self[index] is None) or (self[index].value in
                                      self.set_dict["functions"]):
             return self.get_rand_terminal()
-                
+
         return index
 
     def get_rand_function(self):
@@ -169,16 +169,16 @@ class BinaryTree(list):
         """
         if (self[0] is None) or (self[0].value not in self.set_dict["functions"]):
             raise NodeSelectionError
-        
+
         index = random.randint(0, self.last_level - 1)
         if (self[index] is None) or (self[index].value not in
                                      self.set_dict["functions"]):
             return self.get_rand_function()
 
         return index
-    
+
     def get_rand_node(self):
-        index = random.randint(0, self.size-1) 
+        index = random.randint(0, self.size-1)
         if self[index] != None:
             return index
 
@@ -221,7 +221,7 @@ class BinaryTree(list):
 
         if nodes_in_new == nodes_in_old:
             return
-        
+
         if nodes_in_new < nodes_in_old:
             new.extend([None]*(int(next_level_size(nodes_in_new))))
         elif nodes_in_new > nodes_in_old:
@@ -242,7 +242,7 @@ class BinaryTree(list):
 
 
 class SingularityError(Exception):
-    
+
     def __init__(self):
         self.msg = 'the function called has a singularity'
 
@@ -251,7 +251,7 @@ class SingularityError(Exception):
 
 
 class NodeSelectionError(Exception):
-    
+
     def __init__(self):
         self.msg = 'at least one tree does not have any function nodes, \
 function crossover cannot be performed'
@@ -442,7 +442,7 @@ def subtree_crossover(population, n, data):
     else:
         cross_pt2 = second_parent.get_rand_terminal()
 
-    if exception_occurred == False:        
+    if exception_occurred == False:
         return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
 
     return subtree_crossover(population, n, data)
@@ -475,7 +475,7 @@ def reproduction(population, n, data):
 ##generation; could import a data file as a list of tuples and then use pop to
 ##return the headers
 
-def tree_list(tree):
+def display(tree):
     contents = []
     for item in tree:
         try:
