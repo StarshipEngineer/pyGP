@@ -341,13 +341,16 @@ def fitness(tree, dataset):
 #
         except decimal.Overflow:
             print("An overflow occurred. The offending program was:")
-            print(tree_list(tree))
+            print(display(tree))
             print()
         except decimal.InvalidOperation:
             #print("A decimal op error occurred. The offending program was:")
             #print(tree_list(tree))
             #print()
             print("Invalid op occurred")
+            print(display(tree))
+            print()
+
 #
     return tot_err
 

@@ -1,6 +1,7 @@
 import pygp
 import math
 import random
+import copy
 
 
 """Prepatory steps"""
@@ -96,7 +97,7 @@ def evolve(pop, generation=1):
 """Results of the run"""
 solutioninfo = evolve(pop)
 winner = solutioninfo["best"]
-print(pygp.tree_list(winner))
+print(pygp.display(winner))
 ##print(winner.build_program)
 print(solutioninfo["score"])
 print(solutioninfo["gen"])
