@@ -13,7 +13,8 @@ import copy
 import decimal
 
 decimal.getcontext().prec = 15
-pi = decimal.Decimal(math.pi) #Builds in decimal conversion to prevent overflow
+pi = math.pi
+#pi = decimal.Decimal(math.pi) #Builds in decimal conversion to prevent overflow
 
 primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "pi":0}
 
@@ -22,7 +23,7 @@ class Node(object):
     """"""
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = "decimal.Decimal(%s)" % random.random()
+            self.value = random.random() #"decimal.Decimal(%s)" % random.random()
         else:
             self.value = value
 
@@ -250,6 +251,15 @@ class SingularityError(Exception):
         return self.msg
 
 
+class UnfitError(Exception):
+
+    def __init__(self):
+        self.msg = 'the individual has a fitness score too large to be represented'
+
+    def __str__(self):
+        return self.msg
+
+
 class NodeSelectionError(Exception):
 
     def __init__(self):
@@ -350,6 +360,10 @@ def fitness(tree, dataset):
             print("Invalid op occurred")
             print(display(tree))
             print()
+        except OverflowError:
+            print("An overflow occurred")
+            raise UnfitError
+            # raise a custom exception, like the singularity error for x/0
 
 #
     return tot_err
@@ -380,6 +394,8 @@ def tournament(population, n, data):
             #print("score", score)
             #
         except SingularityError:
+            pass
+        except UnfitError:
             pass
     #print("best:", tree_list(best))
     return best
