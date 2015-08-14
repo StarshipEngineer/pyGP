@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import pygp
 import math
 import random
