@@ -431,6 +431,8 @@ def termination_test(population, data):
                 best_score = score
         except SingularityError:
             pass
+        except UnfitError:
+            pass
 
     return best, best_score
 
