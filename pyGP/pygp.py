@@ -10,7 +10,7 @@ operations, and basic data-handling functionality.
 import random
 import math
 import copy
-import decimal
+#import decimal
 
 #decimal.getcontext().prec = 15
 pi = math.pi
@@ -333,9 +333,6 @@ def fitness(tree, dataset):
     """variables is a list of strings denoting variable names, and dataset is
     a list of tuples of floats denoting variable values
     """
-    #
-    #decimal.getcontext().prec = 10
-    #
     prog = tree.build_program()
     variables = tree.set_dict["variables"]
     m = len(variables)
@@ -345,26 +342,30 @@ def fitness(tree, dataset):
             vars()[variables[i]] = item[i]
         try:
             dvar_actual = item[-1]
-            dvar_calc = eval(prog) # have a problem here for some cases
+            dvar_calc = eval(prog)
             err = abs(dvar_actual - dvar_calc)
             tot_err = tot_err + err
         except ZeroDivisionError:
             raise SingularityError
-#
-        except decimal.Overflow:
-            print("An overflow occurred. The offending program was:")
-            print(display(tree))
-            print()
-        except decimal.InvalidOperation:
-            #print("A decimal op error occurred. The offending program was:")
-            #print(tree_list(tree))
-            #print()
-            print("Invalid op occurred")
-            print(display(tree))
-            print()
         except OverflowError:
-            print("An overflow occurred")
+            print("An overflow occurred with individual:")
+            print(display(tree))
+            print(prog)
+            print()
             raise UnfitError
+#
+##        except decimal.Overflow:
+##            print("An overflow occurred. The offending program was:")
+##            print(display(tree))
+##            print()
+##        except decimal.InvalidOperation:
+##            #print("A decimal op error occurred. The offending program was:")
+##            #print(tree_list(tree))
+##            #print()
+##            print("Invalid op occurred")
+##            print(display(tree))
+##            print()
+        
             # raise a custom exception, like the singularity error for x/0
 
 #
@@ -391,15 +392,11 @@ def tournament(population, n, data):
             if (best_score == None) or (score < best_score):
                 best = item
                 best_score = score
-            #
-            #print("tree:", tree_list(item))
-            #print("score", score)
-            #
         except SingularityError:
             pass
         except UnfitError:
             pass
-    #print("best:", tree_list(best))
+
     return best
 
 
@@ -416,7 +413,6 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
 
 
 def termination_test(population, data):
-# test this- problem likely here
     """Tests the fitness of every member of the population, returning the
     individual with the best fitness and that fitness as a tuple
     """
@@ -472,7 +468,6 @@ def subtree_crossover(population, n, data):
 
 
 def subtree_mutation(tree, max_depth):
-    # shouldn't need p or s- alreayd stored in tree!
     """Takes in a tree and parameters for generating a new tree, and returns
     a copy of the original tree with a subtree replaced by the new tree
     """
