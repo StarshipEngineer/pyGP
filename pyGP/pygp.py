@@ -12,7 +12,7 @@ import math
 import copy
 import decimal
 
-decimal.getcontext().prec = 15
+#decimal.getcontext().prec = 15
 pi = math.pi
 #pi = decimal.Decimal(math.pi) #Builds in decimal conversion to prevent overflow
 
@@ -23,7 +23,8 @@ class Node(object):
     """"""
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = random.random() #"decimal.Decimal(%s)" % random.random()
+            self.value = random.random() 
+#"decimal.Decimal(%s)" % random.random()
         else:
             self.value = value
 
@@ -300,7 +301,8 @@ def read_data(filename):
         line_string = line.rstrip('\n')
         line_list = line_string.split(',')
         for i in range(len(line_list)):
-            line_list[i] = decimal.Decimal(line_list[i])
+            #line_list[i] = decimal.Decimal(line_list[i])
+            line_list[i] = float(line_list[i])
         line_tuple = tuple(line_list)
         data.append(line_tuple)
     file.close()
