@@ -23,7 +23,7 @@ class Node(object):
     """"""
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = random.random() 
+            self.value = str(random.random()) 
 #"decimal.Decimal(%s)" % random.random()
         else:
             self.value = value
