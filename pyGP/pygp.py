@@ -347,7 +347,7 @@ def fitness(tree, dataset):
             #print("A decimal op error occurred. The offending program was:")
             #print(tree_list(tree))
             #print()
-            pass
+            print("Invalid op occurred")
 #
     return tot_err
 
