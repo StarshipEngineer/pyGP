@@ -145,6 +145,16 @@ class BinaryTree(list):
 
         return strng
 
+    def display(tree):
+        contents = []
+        for item in tree:
+            try:
+                contents.append(item.value)
+            except AttributeError:
+               contents.append(None)
+        return contents
+
+
 
     ##    def contents(self):
 ##        content = []
@@ -158,10 +168,13 @@ class BinaryTree(list):
 
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
-        index = random.randint(0, self.size - 1)
-        if (self[index] is None) or (self[index].value in
+        try:
+            index = random.randint(0, self.size - 1)
+            if (self[index] is None) or (self[index].value in
                                      self.set_dict["functions"]):
-            return self.get_rand_terminal()
+                return self.get_rand_terminal()
+        except RuntimeError:
+            print(self.display())
 
         return index
 
