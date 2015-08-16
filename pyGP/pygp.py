@@ -10,11 +10,10 @@ operations, and basic data-handling functionality.
 import random
 import math
 import copy
-#import decimal
 
-#decimal.getcontext().prec = 15
+
 pi = math.pi
-#pi = decimal.Decimal(math.pi) #Builds in decimal conversion to prevent overflow
+
 
 primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "pi":0}
 
@@ -145,9 +144,9 @@ class BinaryTree(list):
 
         return strng
 
-    def display(tree):
+    def display(self):
         contents = []
-        for item in tree:
+        for item in self:
             try:
                 contents.append(item.value)
             except AttributeError:
@@ -314,7 +313,6 @@ def read_data(filename):
         line_string = line.rstrip('\n')
         line_list = line_string.split(',')
         for i in range(len(line_list)):
-            #line_list[i] = decimal.Decimal(line_list[i])
             line_list[i] = float(line_list[i])
         line_tuple = tuple(line_list)
         data.append(line_tuple)
@@ -362,7 +360,7 @@ def fitness(tree, dataset):
             raise SingularityError
         except OverflowError:
             print("An overflow occurred with individual:")
-            print(display(tree))
+            print(tree.display())
             print(prog)
             print()
             raise UnfitError
