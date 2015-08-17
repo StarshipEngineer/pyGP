@@ -8,11 +8,8 @@ operations, and basic data-handling functionality.
 
 
 import random
-import math
-import copy
-
-
-pi = math.pi
+from math import pi, log2
+from copy import deepcopy
 
 
 primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "pi":0}
@@ -23,7 +20,6 @@ class Node(object):
     def __init__(self, value, arity):
         if value == "rand":
             self.value = str(random.random()) 
-#"decimal.Decimal(%s)" % random.random()
         else:
             self.value = value
 
@@ -153,27 +149,17 @@ class BinaryTree(list):
                contents.append(None)
         return contents
 
-
-
-    ##    def contents(self):
-##        content = []
-##        for node in self:
-##            try:
-##                content.append(node.value)
-##            except AttributeError:
-##                content.append(None)
-##        # return a string? Have to fix this before debugging other things
-##        return content
-
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         try:
             index = random.randint(0, self.size - 1)
-            if (self[index] is None) or (self[index].value in
-                                     self.set_dict["functions"]):
-                return self.get_rand_terminal()
         except RuntimeError:
+            print("A recursion depth limit exceeded error occurred. The \
+                  offending program is:")
             print(self.display())
+        if (self[index] is None) or (self[index].value in
+                                     self.set_dict["functions"]):
+            return self.get_rand_terminal()
 
         return index
 
@@ -197,7 +183,6 @@ class BinaryTree(list):
             return index
 
         return self.get_rand_node()
-
 
     def get_subtree(self, n, depth=0):
         """Retrieves and returns as a list the subtree starting at index n"""
@@ -325,7 +310,7 @@ def read_data(filename):
 
 def get_depth(k):
     """Takes the size k of a binary tree and returns its depth"""
-    return int(math.log2(k + 1) - 1)
+    return int(log2(k + 1) - 1)
 
 
 def next_level_size(k):
@@ -364,22 +349,7 @@ def fitness(tree, dataset):
             print(prog)
             print()
             raise UnfitError
-#
-##        except decimal.Overflow:
-##            print("An overflow occurred. The offending program was:")
-##            print(display(tree))
-##            print()
-##        except decimal.InvalidOperation:
-##            #print("A decimal op error occurred. The offending program was:")
-##            #print(tree_list(tree))
-##            #print()
-##            print("Invalid op occurred")
-##            print(display(tree))
-##            print()
-        
-            # raise a custom exception, like the singularity error for x/0
 
-#
     return tot_err
 
 
@@ -416,8 +386,8 @@ def _crossover(tree1, tree2, cross_pt1, cross_pt2):
     of the first tree with the subtree rooted at the first crossover point
     replaced by the subtree rooted at the second point on the second tree
     """
-    tree1copy = copy.deepcopy(tree1)
-    tree2copy = copy.deepcopy(tree2)
+    tree1copy = deepcopy(tree1)
+    tree2copy = deepcopy(tree2)
     sub = tree2copy.get_subtree(cross_pt2)
     tree1copy.replace_subtree(cross_pt1, sub)
     return tree1copy
@@ -498,17 +468,8 @@ def reproduction(population, n, data):
     fit individual
     """
     winner = tournament(population, n, data)
-    return copy.deepcopy(winner)
+    return deepcopy(winner)
 
 ##Another method that extracts headers and passes a tuple for automatic variable
 ##generation; could import a data file as a list of tuples and then use pop to
 ##return the headers
-
-def display(tree):
-    contents = []
-    for item in tree:
-        try:
-            contents.append(item.value)
-        except AttributeError:
-           contents.append(None)
-    return contents

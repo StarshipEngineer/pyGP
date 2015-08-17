@@ -2,7 +2,7 @@
 import pygp
 import math
 import random
-import copy
+from copy import deepcopy
 
 
 """Prepatory steps"""
@@ -12,7 +12,7 @@ import copy
 Specify the function and terminal sets.
 """
 p = pygp.primitives
-v = ["r"]
+v = ["x"]
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
@@ -23,7 +23,7 @@ Define the fitness measure. This is the pygp.fitness function found
 in the pygp module; the data this fitness function will use to evaluate evolved
 programs and determine their fitnesses is imported below.
 """
-filename = "circlearea.csv"
+filename = "datafile.csv"
 data = pygp.read_data(filename)
 
 
@@ -97,8 +97,8 @@ def evolve(pop, generation=1):
 
 """Results of the run"""
 solutioninfo = evolve(pop)
-winner = solutioninfo["best"]
-print(pygp.display(winner))
+winner = deepcopy(solutioninfo["best"])
+print(winner.display())
 ##print(winner.build_program)
 print(solutioninfo["score"])
 print(solutioninfo["gen"])
