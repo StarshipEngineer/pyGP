@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from ..pyGP import pygp
+from pyGP.pyGP import pygp
 import math
 import random
 from copy import deepcopy
@@ -30,7 +30,7 @@ data = pygp.read_data(filename)
 """Step 4
 Set run parameters.
 """
-popsize = 100
+popsize = 1000
 max_depth = 3
 cross_rate = 0.90
 rep_rate = 0.98

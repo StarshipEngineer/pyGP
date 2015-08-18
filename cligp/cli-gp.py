@@ -1,16 +1,9 @@
 #!/usr/bin/python3
-from . import pygp
+from pyGP.pyGP import pygp
 import math
 import random
 from copy import deepcopy
 
-
-"""Prepatory steps"""
-
-
-"""Steps 1 & 2
-Specify the function and terminal sets.
-"""
 p = pygp.primitives
 v = ["x"]
 for item in v:
@@ -18,19 +11,11 @@ for item in v:
 s = pygp.primitive_handler(p, v)
 
 
-"""Step 3
-Define the fitness measure. This is the pygp.fitness function found
-in the pygp module; the data this fitness function will use to evaluate evolved
-programs and determine their fitnesses is imported below.
-"""
 filename = "datafile.csv"
 data = pygp.read_data(filename)
 
 
-"""Step 4
-Set run parameters.
-"""
-popsize = 100
+popsize = 1000
 max_depth = 3
 cross_rate = 0.90
 rep_rate = 0.98
@@ -38,9 +23,7 @@ mut_rate = 1.0
 tourn_size = 5
 
 
-"""Step 5
-Specify termination condition.
-"""
+
 target_fitness = 0.00001
 
 

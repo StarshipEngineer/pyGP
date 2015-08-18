@@ -8,6 +8,7 @@ operations, and basic data-handling functionality.
 
 
 import random
+from random import sample, random, randint, choice
 from math import pi, log2
 from copy import deepcopy
 
@@ -19,7 +20,7 @@ class Node(object):
     """"""
     def __init__(self, value, arity):
         if value == "rand":
-            self.value = str(random.random()) 
+            self.value = str(random()) 
         else:
             self.value = value
 
@@ -92,11 +93,11 @@ class BinaryTree(list):
     def _full(self, s, m, n):
         """Populates the tree using the full method"""
         if (n < m):
-            self[n] = Node(random.choice(self.set_dict["functions"]), 2)
+            self[n] = Node(choice(self.set_dict["functions"]), 2)
             self._full(s, m, 2*n+1)
             self._full(s, m, 2*n+2)
         elif (n < s):
-            self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
+            self[n] = Node(choice(self.set_dict["terminals"]), 0)
 
     def _grow(self, s, m, n):
         """Populates the tree using the grow method"""
@@ -107,9 +108,9 @@ class BinaryTree(list):
         parent = self.get_parent(n) # this needs to change as well
         if n == 0: #and self.depth >= 1: switch order, do if equal zero and else
             if self.depth >= 1:
-                prim = random.choice(self.set_dict["primitives"])
+                prim = choice(self.set_dict["primitives"])
             elif self.depth == 0:
-                prim = random.choice(self.set_dict["terminals"])
+                prim = choice(self.set_dict["terminals"])
 
             self[n] = Node(prim, self.primitives[prim])
             self._grow(s, m, 2*n+1)
@@ -119,7 +120,7 @@ class BinaryTree(list):
             self.set_dict["functions"]:
                 self[n] = None
             else:
-                prim = random.choice(self.set_dict["primitives"])
+                prim = choice(self.set_dict["primitives"])
                 self[n] = Node(prim, self.primitives[prim])
             self._grow(s, m, 2*n+1)
             self._grow(s, m, 2*n+2)
@@ -128,7 +129,7 @@ class BinaryTree(list):
             self.set_dict["functions"]:
                 self[n] = None
             else:
-                self[n] = Node(random.choice(self.set_dict["terminals"]), 0)
+                self[n] = Node(choice(self.set_dict["terminals"]), 0)
 
     def build_program(self, n=0):
         strng = ""
@@ -152,7 +153,7 @@ class BinaryTree(list):
     def get_rand_terminal(self):
         """Returns the index of a random terminal"""
         try:
-            index = random.randint(0, self.size - 1)
+            index = randint(0, self.size - 1)
         except RuntimeError:
             print("A recursion depth limit exceeded error occurred. The \
                   offending program is:")
@@ -170,7 +171,7 @@ class BinaryTree(list):
         if (self[0] is None) or (self[0].value not in self.set_dict["functions"]):
             raise NodeSelectionError
 
-        index = random.randint(0, self.last_level - 1)
+        index = randint(0, self.last_level - 1)
         if (self[index] is None) or (self[index].value not in
                                      self.set_dict["functions"]):
             return self.get_rand_function()
@@ -178,7 +179,7 @@ class BinaryTree(list):
         return index
 
     def get_rand_node(self):
-        index = random.randint(0, self.size-1)
+        index = randint(0, self.size-1)
         if self[index] != None:
             return index
 
@@ -344,19 +345,9 @@ def fitness(tree, dataset):
         except ZeroDivisionError:
             raise SingularityError
         except OverflowError:
-            print("An overflow occurred with individual:")
-            print(tree.display())
-            print(prog)
-            print()
             raise UnfitError
 
     return tot_err
-
-
-def _sample(population, n):
-    """A wrapper for the random module's sample function"""
-    pop_sample = random.sample(population, n)
-    return pop_sample
 
 
 def tournament(population, n, data):
@@ -364,7 +355,7 @@ def tournament(population, n, data):
     population and thunderdome-ing it, returning the individual with the best
     fitness
     """
-    pop_sample = _sample(population, n)
+    pop_sample = sample(population, n)
     best = None
     best_score = None
     for item in pop_sample:
@@ -377,6 +368,9 @@ def tournament(population, n, data):
             pass
         except UnfitError:
             pass
+
+    if best == None:
+        return tournament(populatio, n, data)
 
     return best
 
@@ -397,7 +391,7 @@ def termination_test(population, data):
     """Tests the fitness of every member of the population, returning the
     individual with the best fitness and that fitness as a tuple
     """
-    pop_sample = _sample(population, len(population)-1)
+    pop_sample = sample(population, len(population)-1)
     best = None
     best_score = None
     for item in pop_sample:
@@ -423,9 +417,10 @@ def subtree_crossover(population, n, data):
     """
     exception_occurred = False
     first_parent = tournament(population, n, data)
-    second_parent = tournament(population, n, data)
-    choice1 = random.random()
-    choice2 = random.random()
+    second_parent = tournament(population, n, data) # This returned a None- probably because all programs failed
+    # make tournament recursive
+    choice1 = random()
+    choice2 = random()
     if choice1 < 0.9:
         try:
             cross_pt1 = first_parent.get_rand_function()
@@ -455,7 +450,7 @@ def subtree_mutation(tree, max_depth):
     p = tree.primitives
     s = tree.set_dict
     init_options = ['full', 'grow']
-    subtree = BinaryTree(p, s, random.choice(init_options), random.randint(0, max_depth))
+    subtree = BinaryTree(p, s, choice(init_options), randint(0, max_depth))
     return _crossover(tree, subtree, tree.get_rand_node(), 0)
 
 
