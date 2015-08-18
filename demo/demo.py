@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from . import pygp
+from ..pyGP import pygp
 import math
 import random
 from copy import deepcopy
