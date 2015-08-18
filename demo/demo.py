@@ -98,7 +98,8 @@ def evolve(pop, generation=1):
 """Results of the run"""
 solutioninfo = evolve(pop)
 winner = deepcopy(solutioninfo["best"])
+print("The winning program is:")
 print(winner.display())
-##print(winner.build_program)
-print(solutioninfo["score"])
-print(solutioninfo["gen"])
+print("Its fitness score was", solutioninfo["score"],
+      "and it appeared in generation", solutioninfo["gen"])
+print()

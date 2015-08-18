@@ -370,7 +370,7 @@ def tournament(population, n, data):
             pass
 
     if best == None:
-        return tournament(populatio, n, data)
+        return tournament(population, n, data)
 
     return best
 

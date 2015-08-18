@@ -4,37 +4,25 @@ import math
 import random
 from copy import deepcopy
 
+
+filename = input("Enter the name of the file containing fitness data: ")
+data = pygp.read_data(filename)
+
+
 p = pygp.primitives
-v = ["x"]
+v = ["x"] # enter variables
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
 
 
-filename = "datafile.csv"
-data = pygp.read_data(filename)
+settings = open("settings.txt", "r")
+for line in settings:
+    eval(line)
+settings.close()
 
 
-popsize = 1000
-max_depth = 3
-cross_rate = 0.90
-rep_rate = 0.98
-mut_rate = 1.0
-tourn_size = 5
-
-
-
-target_fitness = 0.00001
-
-
-"""Running GP"""
-
-
-"""Initialization
-An initial population is generated, in this case using the ramped half-and-half
-technique, where half the initial population is generated with grow and the
-other half with full, using a variety of depths.
-"""
+# Make a function, add to pygp
 pop = []
 half = int(popsize / 2)
 for i in range(1, half):
@@ -44,10 +32,7 @@ for i in range(half, popsize+1):
     pop.append(pygp.BinaryTree(p, s, "grow", random.randint(1, max_depth)))
 
 
-"""Evolve the population toward a solution
-Continue evolving the population until an individual
-meeting the target fitness is found.
-"""
+# Add function to pygp
 def evolve(pop, generation=1):
     """This function examines each generation of programs, and if none meet
     the termination criterion, evolves a new generation and calls itself
@@ -56,13 +41,11 @@ def evolve(pop, generation=1):
     other info.
     """
     print(generation)
-    best_in_gen = pygp.termination_test(pop, data) # include a program return
-    
+    best_in_gen = pygp.termination_test(pop, data)    
     if best_in_gen[1] < target_fitness:
         return {"best":best_in_gen[0], "score":best_in_gen[1],
                 "gen": generation}
 
-    # if above fitness test fails, produce a new generation
     next_gen = []
     for i in range(len(pop)):
         choice = random.random()
@@ -75,13 +58,13 @@ def evolve(pop, generation=1):
 
         next_gen.append(child)
 
-    # After producing a new generation, call recursively
     return evolve(next_gen, generation+1)
 
-"""Results of the run"""
+
 solutioninfo = evolve(pop)
 winner = deepcopy(solutioninfo["best"])
+print("The winning program is:")
 print(winner.display())
-##print(winner.build_program)
-print(solutioninfo["score"])
-print(solutioninfo["gen"])
+print("Its fitness score was", solutioninfo["score"],
+      "and it appeared in generation", solutioninfo["gen"])
+print()

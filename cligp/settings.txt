@@ -1,0 +1,21 @@
+popsize = 1000
+# Population size per generation
+
+max_depth = 3
+# Maximum starting depth of trees
+
+cross_rate = 0.90
+# Rate at which subtree crossover is applied as a recombination mechanism
+
+rep_rate = 0.98
+# After subtraction of cross_rate, the rate at which reproduction is applied
+
+mut_rate = 1.0
+# After subtraction of cross_rate and rep_rate, the rate at which mutation is applied
+
+tourn_size = 5
+# Number of individuals to be selected to participate in each tournament selection
+
+target_fitness = 0.01
+# The desired fitness threshold a program must score below for it to be declared
+# the solution and the run to be terminated
