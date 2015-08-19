@@ -24,9 +24,10 @@ mut_rate = float(input("Mutation rate: ")) + cross_rate + rep_rate
 
 p = primitives.pset
 
-
+#make a function
 vs = input("Enter the variables corresponding to the columns in the data \
            file, in order from left to right, separated only by commas: ")
+print("The specified variables are:", vs)
 v = vs.split(",")
 for item in v:
     p[item] = 0
