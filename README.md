@@ -8,4 +8,6 @@ The pyGP library contains four modules for user use. The main pygp module contai
 
 The demo directory contains the demo module, which demonstrates a run of GP and is liberally commented to explain the basics of a run. The directory also contains .csv files of sample data, which the demo module can use to find a solution function that matches the data they contain.
 
+The cli-gp directory contains a symbolic regression program module which accepts user-defined control parameters of the GP run and displays its progress via the command line.
+
 Finally, the tests directory contains various scripts for testing components of the library.
