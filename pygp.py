@@ -6,14 +6,10 @@ operations, and basic data-handling functionality.
 """
 
 
-
-import random
 from random import sample, random, randint, choice
-from math import pi, log2
+from pyGP.primitives import pi, e
+from math import log2
 from copy import deepcopy
-
-
-primitives = {"+":2, "-":2, "*":2, "/":2, "**":2, "rand":0, "pi":0}
 
 
 class Node(object):
@@ -269,43 +265,6 @@ function crossover cannot be performed'
         return self.msg
 
 
-"""Data handling functions for user use"""
-
-
-def primitive_handler(prim_dict, variables):
-    """Sorts a dictionary of primitive/arity pairs into a dictionary of
-    lists containing terminals, functions, primitives, and variables
-    """
-    functions = []
-    terminals = []
-    for key in prim_dict:
-        if prim_dict[key] == 0:
-            terminals.append(key)
-        else:
-            functions.append(key)
-
-    primitives = functions + terminals
-    return {"primitives":primitives, "functions":functions,
-            "terminals":terminals, "variables":variables}
-
-
-def read_data(filename):
-    """Reads data from a file and returns a list of tuples. Each tuple
-    contains variable values at a specific step
-    """
-    data = []
-    file = open(filename, "r")
-    for line in file:
-        line_string = line.rstrip('\n')
-        line_list = line_string.split(',')
-        for i in range(len(line_list)):
-            line_list[i] = float(line_list[i])
-        line_tuple = tuple(line_list)
-        data.append(line_tuple)
-    file.close()
-    return data
-
-
 """Functions for working with individual trees"""
 
 
@@ -321,6 +280,64 @@ def next_level_size(k):
     d = get_depth(k)
     d = d + 1
     return 2 ** d
+
+
+"""Tree recombination and mutation functions for user use"""
+
+
+def subtree_crossover(population, n, data):
+    """Takes a population, performs 2 tournament selections with sample size n,
+    performs subtree crossover on the winners, and returns a new tree
+    """
+    exception_occurred = False
+    first_parent = tournament(population, n, data)
+    second_parent = tournament(population, n, data) # This returned a None- probably because all programs failed
+    # make tournament recursive
+    choice1 = random()
+    choice2 = random()
+    if choice1 < 0.9:
+        try:
+            cross_pt1 = first_parent.get_rand_function()
+        except NodeSelectionError:
+            exception_occurred = True
+    else:
+        cross_pt1 = first_parent.get_rand_terminal()
+
+    if choice2 < 0.9:
+        try:
+            cross_pt2 = second_parent.get_rand_function()
+        except NodeSelectionError:
+            exception_occurred = True
+    else:
+        cross_pt2 = second_parent.get_rand_terminal()
+
+    if exception_occurred == False:
+        return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
+
+    return subtree_crossover(population, n, data)
+
+
+def subtree_mutation(tree, max_depth):
+    """Takes in a tree and parameters for generating a new tree, and returns
+    a copy of the original tree with a subtree replaced by the new tree
+    """
+    p = tree.primitives
+    s = tree.set_dict
+    init_options = ['full', 'grow']
+    subtree = BinaryTree(p, s, choice(init_options), randint(0, max_depth))
+    return _crossover(tree, subtree, tree.get_rand_node(), 0)
+
+
+def point_mutation():
+    pass
+
+
+def reproduction(population, n, data):
+    """Performs a single tournament selection and returns a copy of the most
+    fit individual
+    """
+    winner = tournament(population, n, data)
+    return deepcopy(winner)
 
 
 """Functions used in fitness evaluation, recombination, and mutation"""
@@ -406,64 +423,6 @@ def termination_test(population, data):
             pass
 
     return best, best_score
-
-
-"""Tree recombination and mutation functions for user use"""
-
-
-def subtree_crossover(population, n, data):
-    """Takes a population, performs 2 tournament selections with sample size n,
-    performs subtree crossover on the winners, and returns a new tree
-    """
-    exception_occurred = False
-    first_parent = tournament(population, n, data)
-    second_parent = tournament(population, n, data) # This returned a None- probably because all programs failed
-    # make tournament recursive
-    choice1 = random()
-    choice2 = random()
-    if choice1 < 0.9:
-        try:
-            cross_pt1 = first_parent.get_rand_function()
-        except NodeSelectionError:
-            exception_occurred = True
-    else:
-        cross_pt1 = first_parent.get_rand_terminal()
-
-    if choice2 < 0.9:
-        try:
-            cross_pt2 = second_parent.get_rand_function()
-        except NodeSelectionError:
-            exception_occurred = True
-    else:
-        cross_pt2 = second_parent.get_rand_terminal()
-
-    if exception_occurred == False:
-        return _crossover(first_parent, second_parent, cross_pt1, cross_pt2)
-
-    return subtree_crossover(population, n, data)
-
-
-def subtree_mutation(tree, max_depth):
-    """Takes in a tree and parameters for generating a new tree, and returns
-    a copy of the original tree with a subtree replaced by the new tree
-    """
-    p = tree.primitives
-    s = tree.set_dict
-    init_options = ['full', 'grow']
-    subtree = BinaryTree(p, s, choice(init_options), randint(0, max_depth))
-    return _crossover(tree, subtree, tree.get_rand_node(), 0)
-
-
-def point_mutation():
-    pass
-
-
-def reproduction(population, n, data):
-    """Performs a single tournament selection and returns a copy of the most
-    fit individual
-    """
-    winner = tournament(population, n, data)
-    return deepcopy(winner)
 
 ##Another method that extracts headers and passes a tuple for automatic variable
 ##generation; could import a data file as a list of tuples and then use pop to

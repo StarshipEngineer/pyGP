@@ -1,34 +1,41 @@
 #!/usr/bin/python3
-from pyGP.pyGP import components as pygp
-from pyGP.pyGP import majorelements as me
+from pyGP import pygp, tools, primitives
+from pyGP import majorelements as me
 from copy import deepcopy
 
 
 filename = input("Enter the name of the file containing fitness data: ")
 data = pygp.read_data(filename)
 
-popsize = 1000
-max_depth = 3
-cross_rate = 0.90
-rep_rate = 0.98
-mut_rate = 1.0
-tourn_size = 5
-target_fitness = 0.01
+print("Specify characteristics of the run")
+popsize = int(input("Enter the population size: "))
+max_depth = int(input("Enter the maximum starting depth of trees: "))
+tourn_size = int(input("Enter the number of individuals to be selected to \
+                       participate in tournaments: "))
+target_fitness = float(input("Enter the target fitness a program must score \
+                       below to be declared the solution and terminate the \
+                       run: "))
+print("Enter the rates of crossover, reproduction, and mutation. Their sum \
+      must be exactly 1.0.")
+cross_rate = float(input("Crossover rate: "))
+rep_rate = float(input("Reproduction rate: ")) + cross_rate #0.98
+mut_rate = float(input("Mutation rate: ")) + cross_rate + rep_rate
 
 
-p = pygp.primitives
-v = ["x"] # enter variables
+p = primitives.pset
+
+
+vs = input("Enter the variables corresponding to the columns in the data \
+           file, in order from left to right, separated only by commas: ")
+v = vs.split(",")
 for item in v:
     p[item] = 0
 s = pygp.primitive_handler(p, v)
 
 
-settings = open("settings.txt", "r")
-for line in settings:
-    eval(line)
-settings.close()
-
+print("Generating initial population")
 pop = me.ramped()
+print("")
 solutioninfo = me.evolve(pop)
 winner = deepcopy(solutioninfo["best"])
 print("The winning program is:")

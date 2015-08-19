@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from pyGP.pyGP import components as pygp
+from pyGP import pygp, tools, primitives
 from random import random, randint
 from copy import deepcopy
 
@@ -10,11 +10,11 @@ from copy import deepcopy
 """Steps 1 & 2
 Specify the function and terminal sets.
 """
-p = pygp.primitives
+pset = primitives.pset
 v = ["x"]
 for item in v:
-    p[item] = 0
-s = pygp.primitive_handler(p, v)
+    pset[item] = 0
+s = tools.primitive_handler(pset, v)
 
 
 """Step 3
@@ -23,7 +23,7 @@ in the pygp module; the data this fitness function will use to evaluate evolved
 programs and determine their fitnesses is imported below.
 """
 filename = "datafile.csv"
-data = pygp.read_data(filename)
+data = tools.read_data(filename)
 
 
 """Step 4
@@ -50,7 +50,7 @@ target_fitness = 0.00001
 An initial population is generated, in this case using the ramped half-and-half
 technique.
 """
-def ramped(popsize, p, s, max_depth):
+def ramped(popsize, pset, s, max_depth):
     """Initializes and returns a population using the ramped half-and-half
     technique, where half the initial population is generated with grow and the
     other half with full, using a range of depths. This function can also be
@@ -59,15 +59,15 @@ def ramped(popsize, p, s, max_depth):
     pop = []
     half = int(popsize / 2)
     for i in range(1, half):
-        pop.append(pygp.BinaryTree(p, s, "full", randint(1, max_depth)))
+        pop.append(pygp.BinaryTree(pset, s, "full", randint(1, max_depth)))
         
     for i in range(half, popsize+1):
-        pop.append(pygp.BinaryTree(p, s, "grow", randint(1, max_depth)))
+        pop.append(pygp.BinaryTree(pset, s, "grow", randint(1, max_depth)))
 
     return pop
 
 
-pop = ramped(popsize, p, s, max_depth)
+pop = ramped(popsize, pset, s, max_depth)
 
 
 """Evolve the population toward a solution
