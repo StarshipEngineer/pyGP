@@ -35,7 +35,7 @@ s = pygp.primitive_handler(p, v)
 
 
 print("Generating initial population")
-pop = me.ramped()
+pop = me.ramped(popsize, p, s, max_depth)
 print("")
 solutioninfo = me.evolve(pop)
 winner = deepcopy(solutioninfo["best"])

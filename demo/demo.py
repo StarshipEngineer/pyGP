@@ -14,7 +14,7 @@ components which can be used to construct possible solutions to the problem. For
 a mathematical problem, these will be mathematical functions and constants.
 """
 pset = primitives.pset
-v = ["x"]
+v = ["x", "y"]
 for item in v:
     pset[item] = 0
 s = tools.primitive_handler(pset, v)
@@ -26,7 +26,7 @@ The fitness measure is the pygp.fitness function found in the pygp module; the
 data this fitness function will use to evaluate evolved programs and determine
 their fitnesses is imported below.
 """
-filename = "datafile.csv"
+filename = "data.csv"
 data = tools.read_data(filename)
 
 
