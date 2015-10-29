@@ -1,6 +1,6 @@
 # pyGP
 
-PyGP is a genetic programming library for Python 3, written primarily for symbolic regression applications and based on the genetic programming principles outlined in A Field Guide to Genetic Programming by Poli, Langdon, and McPhee. It contains classes and functions for implementing a basic genetic programming implementation, a demo module demonstrating a GP run, and a command-line GP module for symbolic regression via the CLI. The latter two modules are scripts that can be executed from within their home directories.
+PyGP is a genetic programming library for Python 3, written primarily for symbolic regression applications and based on the genetic programming principles outlined in A Field Guide to Genetic Programming by Poli, Langdon, and McPhee. It contains classes and functions for implementing a basic genetic programming implementation, a demo module demonstrating a GP run, and a command-line GP module for symbolic regression via the CLI. The latter two modules are scripts that can be executed from within their home directories by system shell commands, command-line Python, or a Python IDE.
 
 ####Library Contents
 
